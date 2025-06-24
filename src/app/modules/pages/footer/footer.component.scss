@@ -1,0 +1,45 @@
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem 2.5rem;
+    background: linear-gradient(
+      90deg,
+      rgba(164, 222, 244, 0.726) 0%,
+      rgba(57, 185, 232, 0.726) 30%,
+      rgba(40, 140, 203, 0.726) 55%,
+      rgba(29, 112, 185, 0.726) 85%
+    );
+    color: white;
+    height: 1rem;
+    position: relative;
+    bottom: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+
+  
+    .footer-content {
+      text-align: center;
+  
+      p {
+        margin: 0;
+        font-size: 1rem;
+      }
+    }
+}
+
+@media (max-width: 600px) {
+        
+    
+
+    .footer {
+        height: 2vh;
+    
+        .footer-text{
+          font-size: 0.8rem !important;
+        }
+      }
+
+    }
+

@@ -1,0 +1,64 @@
+<div class="app-container">
+  <app-header></app-header>
+  <div class="container">
+    <h1 class="subtitle">Editar Perfil</h1>
+
+    <div class="content">
+      <mat-card class="center-card">
+        <!-- Icono de person dentro de un círculo con un icono de + -->
+        <div class="card-header">
+          <div class="avatar-container">
+            <mat-icon class="person-icon">person</mat-icon>
+            <mat-icon class="add-icon">add</mat-icon>
+          </div>
+        </div>
+
+        <!-- Campos de entrada -->
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <div class="card-body">
+            <!-- Primera fila de inputs -->
+            <div class="input-row">
+              <div class="input-group">
+                <label class="input-label">Nombre</label>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="first_name">
+                </mat-form-field>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Apellido</label>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="last_name">
+                </mat-form-field>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Teléfono</label>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="telefono">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Segunda fila de inputs -->
+            <div class="input-row">
+              <div class="input-group full-width">
+                <label class="input-label">Email</label>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="email">
+                </mat-form-field>
+              </div>
+              <div class="input-group optional-field">
+                <label class="input-label">Teléfono Opcional</label>
+                <mat-form-field appearance="outline">
+                  <input matInput formControlName="telefono_opcional">
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- Botón Actualizar -->
+            <button mat-raised-button type="submit" class="update-button">Actualizar</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>

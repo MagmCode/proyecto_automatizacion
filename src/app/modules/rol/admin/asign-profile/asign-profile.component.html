@@ -1,0 +1,59 @@
+<div class="app-container">
+    <app-header></app-header>
+    <div class="container">
+      <h1 class="subtitle">Asignar Perfil</h1>
+  
+      <div class="content">
+        <mat-card class="center-card">
+          <!-- Icono de person dentro de un círculo con un icono de + -->
+          <div class="card-header">
+            <div class="avatar-container">
+              <mat-icon class="person-icon">person</mat-icon>
+            </div>
+          </div>
+  
+          <!-- Campos de entrada -->
+          <div class="card-body">
+            <!-- Primera fila de inputs -->
+            <div class="input-row">
+              <div class="input-group">
+                <label class="input-label">Código de Usuario</label>
+                <mat-form-field appearance="outline">
+                  <input matInput>
+                </mat-form-field>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Rol</label>
+                <mat-form-field appearance="outline">
+                  <mat-select>
+                    <mat-option value="admin">Admin</mat-option>
+                    <mat-option value="cliente">Cliente</mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+            </div>
+  
+            <!-- Segunda fila de inputs -->
+            <div class="input-row">
+              <div class="input-group">
+                <label class="input-label">Nombre de Perfil</label>
+                <mat-form-field appearance="outline">
+                  <input matInput>
+                </mat-form-field>
+              </div>
+              <div class="input-group">
+                <label class="input-label">Clave</label>
+                <mat-form-field appearance="outline">
+                  <input matInput type="password">
+                </mat-form-field>
+              </div>
+            </div>
+  
+            <!-- Botón Actualizar -->
+            <button mat-raised-button class="update-button">Actualizar</button>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+    <app-footer></app-footer>
+  </div>

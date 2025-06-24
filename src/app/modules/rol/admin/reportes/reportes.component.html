@@ -1,0 +1,26 @@
+    <div class="app-container">
+      <app-header></app-header>
+      <div class="container">
+        <h1 class="request-title">Reportes</h1>
+    
+        <div class="request-section">
+          <div class="request-options">
+            <mat-card class="option">
+                <p class="option-text">Reembolso</p>
+                <p class="option-button option-semanal" (click)="descargarReporteSemanalReembolso()">Semanal</p>
+                <p class="option-button option-mensual" (click)="descargarReporteMensualReembolso()">Mensual</p>
+              </mat-card>
+              
+              <mat-card class="option">
+                <p class="option-text">Carta Aval</p>
+                <p class="option-button option-semanal" (click)="descargarReporteSemanalCartaval()">Semanal</p>
+                <p class="option-button option-mensual" (click)="descargarReporteMensualCartaval()">Mensual</p>
+              </mat-card>
+              
+          </div>
+        </div>
+      </div>
+      <app-footer></app-footer>
+    </div>
+
+  

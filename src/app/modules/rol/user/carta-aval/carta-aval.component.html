@@ -1,0 +1,237 @@
+<div class="app-container">
+  <app-header></app-header>
+  <div class="container">
+    <h1 class="subtitle">Carta Aval</h1>
+
+    <!-- Resumen de solicitudes -->
+    <div class="resumen-solicitudes">
+      <mat-chip>Total: {{ totalSolicitudes }}</mat-chip>
+      <mat-chip class="estado-aprobado">Aprobadas: {{ aprobadas }}</mat-chip>
+      <mat-chip class="estado-revision">En revisión: {{ enRevision }}</mat-chip>
+      <mat-chip class="estado-rechazado">Rechazadas: {{ rechazadas }}</mat-chip>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="content">
+      <!-- Left Card (Datos del paciente) -->
+      <mat-card class="left-card">
+        <mat-card-title class="card-title-paciente">{{ usuario?.nombreCompleto }}</mat-card-title>
+        <mat-card-content class="datos-paciente-reembolso">
+          <!-- Datos del paciente -->
+          <div class="info">
+            <p class="uno"><strong>Cédula:</strong> {{ usuario?.tipoCedula }}-{{ usuario?.cedula }}</p>
+            <p class="dos"><strong>Teléfono:</strong> {{ usuario?.telefono }}</p>
+          </div>
+          <div class="info">
+            <p class="uno"><strong>Aseguradora:</strong> {{ getAseguradora(usuario?.aseguradora) }}</p>
+            <p class="dos"><strong>Nro. Póliza:</strong> {{ usuario?.nroPoliza }}</p>
+          </div>
+          <div class="info">
+            <p class="uno estatus"><strong>Monto Total:</strong> 00.00</p>
+            <!-- Puedes agregar más información aquí si es necesario -->
+          </div>
+          <div class="finiquito-button">
+            <p><strong>Descargar Finiquito</strong></p>
+            <mat-icon color="primary" class="download-button">cloud_download</mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      
+
+<!-- Center Card (Tabla de facturas) -->
+<mat-card class="center-card">
+  <div class="header-container">
+    <mat-card-title class="card-title-factura">Facturas</mat-card-title>
+    <mat-form-field appearance="outline" class="search-field">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Buscar..." class="find">
+      <button mat-icon-button matSuffix>
+        <mat-icon color="primary">search</mat-icon>
+      </button>
+    </mat-form-field>
+  </div>
+
+  <mat-paginator class="paginator" [pageSize]="3" [pageSizeOptions]="[3]" showFirstLastButtons></mat-paginator>
+
+
+  <mat-card-content>
+    <div class="table-container">
+      <table mat-table [dataSource]="facturaDataSource" class="mat-elevation-z8">
+
+        <!-- Nro. Factura Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>Nro. Factura</th>
+          <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+
+        <!-- Nro. Control Column -->
+        <ng-container matColumnDef="nroControl">
+          <th mat-header-cell *matHeaderCellDef>Nro. Control</th>
+          <td mat-cell *matCellDef="let element">{{ element.nroControl }}</td>
+        </ng-container>
+
+        <!-- Fecha Factura Column -->
+        <ng-container matColumnDef="fechaFactura">
+          <th mat-header-cell *matHeaderCellDef>Fecha Factura</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.fechaFactura | date:'dd/MM/yyyy' }}
+          </td>
+        </ng-container>
+
+        <!-- Concepto Column -->
+        <ng-container matColumnDef="concepto">
+          <th mat-header-cell *matHeaderCellDef>Concepto</th>
+          <td mat-cell *matCellDef="let element">{{ element.concepto }}</td>
+        </ng-container>
+
+        <!-- Monto Column -->
+        <ng-container matColumnDef="monto">
+          <th mat-header-cell *matHeaderCellDef>Monto</th>
+          <td mat-cell *matCellDef="let element">
+            {{ element.monto | currency:'USD':'symbol' }}
+          </td>
+        </ng-container>
+
+        <!-- Documentos Column (Comprobante de Factura) -->
+        <ng-container matColumnDef="documentos">
+          <th mat-header-cell *matHeaderCellDef>Comprobante de Factura</th>
+          <td mat-cell *matCellDef="let element">
+            <div *ngFor="let doc of element.documentos">
+              <a [href]="doc.url" target="_blank" mat-button color="primary">
+                <mat-icon>description</mat-icon> {{ doc.nombre }}
+              </a>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Estado Column -->
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip [ngClass]="getEstadoClass(element.estado)">
+              {{ element.estado }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Acciones Column -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>
+            <button mat-icon-button (click)="addRow()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button (click)="verDetalles(element)">
+              <mat-icon color="primary">visibility</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Header and Rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+    </div>
+  </div>
+  <app-footer></app-footer>
+</div>
+
+<!-- Diálogo para agregar factura -->
+<ng-template #addFacturaDialog>
+  <h2 mat-dialog-title>Agregar Factura</h2>
+  <mat-dialog-content>
+    <mat-stepper linear #stepper>
+      <!-- Paso 1: Datos de la factura -->
+      <mat-step [stepControl]="firstFormGroup">
+        <form [formGroup]="firstFormGroup">
+          <ng-template matStepLabel>Datos de la Factura</ng-template>
+          <div class="row">
+            <mat-form-field appearance="outline" class="col">
+              <mat-label>Nro. Factura</mat-label>
+              <input matInput formControlName="id" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col">
+              <mat-label>Nro. Control</mat-label>
+              <input matInput formControlName="nroControl" required>
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <mat-form-field appearance="outline" class="col">
+              <mat-label>Fecha Factura</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="fechaFactura" required>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="col">
+              <mat-label>Concepto</mat-label>
+              <input matInput formControlName="concepto" required>
+            </mat-form-field>
+          </div>
+          <div class="row">
+            <mat-form-field appearance="outline" class="col">
+              <mat-label>Monto</mat-label>
+              <input matInput formControlName="monto" required>
+            </mat-form-field>
+          </div>
+          <!-- Campo oculto para aseguradora -->
+          <input type="hidden" formControlName="aseguradora">
+        </form>
+        <div class="stepper-buttons">
+          <button mat-button mat-dialog-close>Cancelar</button>
+          <button mat-button matStepperNext>Siguiente</button>
+        </div>
+      </mat-step>
+
+      <!-- Paso 2: Cargar documentos -->
+      <mat-step [stepControl]="secondFormGroup">
+        <form [formGroup]="secondFormGroup">
+          <ng-template matStepLabel>Cargar Documentos</ng-template>
+          <!-- Campo para informe amplio -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Informe Amplio</mat-label>
+            <input matInput [value]="getFileName('informe_ampliado')" readonly>
+            <button mat-icon-button matSuffix (click)="fileInputInformeAmplio.click()">
+              <mat-icon>upload</mat-icon>
+            </button>
+            <input hidden #fileInputInformeAmplio type="file" (change)="onFileSelected($event, 'informe_ampliado')">
+            <mat-error *ngIf="secondFormGroup.get('informeAmplio')?.touched">
+              Debe cargar el documento de informe amplio.
+            </mat-error>
+          </mat-form-field>
+          <!-- Campo para informe y resultados de estudio -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Informe y Resultados de Estudio</mat-label>
+            <input matInput [value]="getFileName('informe_resultado')" readonly>
+            <button mat-icon-button matSuffix (click)="fileInputInformeEstudio.click()">
+              <mat-icon>upload</mat-icon>
+            </button>
+            <input hidden #fileInputInformeEstudio type="file" (change)="onFileSelected($event, 'informe_resultado')">
+            <mat-error *ngIf="secondFormGroup.get('informeEstudio')?.touched">
+              Debe cargar el documento de informe y resultados.
+            </mat-error>
+          </mat-form-field>
+          <!-- Campo para documento de identificación -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Documento de Identificación</mat-label>
+            <input matInput [value]="getFileName('docIdentificacion')" readonly>
+            <button mat-icon-button matSuffix (click)="fileInputCedulaPaciente.click()">
+              <mat-icon>upload</mat-icon>
+            </button>
+            <input hidden #fileInputCedulaPaciente type="file" (change)="onFileSelected($event, 'docIdentificacion')">
+            <mat-error *ngIf="secondFormGroup.get('docIdentificacion')?.touched">
+              Debe cargar el documento de identificación.
+            </mat-error>
+          </mat-form-field>
+        </form>
+        <div class="stepper-buttons">
+          <button mat-button matStepperPrevious>Atrás</button>
+          <button mat-button (click)="guardar()">Guardar</button>
+        </div>
+      </mat-step>      
+    </mat-stepper>
+  </mat-dialog-content>
+</ng-template>

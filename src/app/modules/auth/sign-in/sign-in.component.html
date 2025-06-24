@@ -1,0 +1,88 @@
+<div class="login-container">
+  <div class="login-box">
+    <div class="logo-container">
+      <img
+        src="/assets/images/Logo.png"
+        alt="Company logo with text 'PM EXPRESS 2021 CA'"
+      />
+    </div>
+    <form [formGroup]="loginForm" class="form-container" autocomplete="off">
+      <!-- Campo: Usuario (cédula) -->
+      <label for="username">Usuario (cédula)</label>
+      <div class="input-container">
+        <mat-icon class="input-icon">person</mat-icon>
+        <mat-form-field appearance="outline" class="full-width mat-form-field-appearance-outline">
+          <input
+            matInput
+            type="number"
+            formControlName="username"
+            id="username"
+            appMaxLength
+            #inputField
+          />
+          <!-- Mensaje de error para el campo de usuario -->
+          <mat-error *ngIf="username.invalid">
+            {{ getErrorMessage('username') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Campo: Contraseña -->
+      <label for="password">Contraseña</label>
+      <div class="input-container">
+        <mat-icon class="input-icon">lock</mat-icon>
+        <mat-form-field appearance="outline" class="full-width mat-form-field-appearance-outline">
+          <input
+            matInput
+            [type]="hide ? 'password' : 'text'"
+            formControlName="password"
+            id="password"
+            #passwordField
+            #inputField
+          />
+          <button
+            mat-icon-button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            matSuffix
+          >
+            <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+          </button>
+          <!-- Mensaje de error para el campo de contraseña -->
+          <mat-error *ngIf="password.invalid">
+            {{ getErrorMessage('password') }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Enlace: ¿Olvidó su contraseña? -->
+      <div class="forgot-password">
+        <a (click)="forgotPassword()">¿Olvidó su Contraseña?</a>
+      </div>
+
+      <!-- Botón: Ingresar -->
+      <div class="login-button">
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="onSubmit()"
+        >
+          <ng-container *ngIf="!isLoading"> Ingresar </ng-container>
+          <ng-container *ngIf="isLoading">
+            <mat-progress-spinner
+              [diameter]="24"
+              mode="indeterminate"
+              class="white-spinner"
+            >
+            </mat-progress-spinner>
+          </ng-container>
+        </button>
+      </div>
+
+      <!-- Enlace: ¡Regístrate Aquí! -->
+      <div class="register-link">
+        <a (click)="signUp()">¡Regístrate Aquí!</a>
+      </div>
+    </form>
+  </div>
+</div>

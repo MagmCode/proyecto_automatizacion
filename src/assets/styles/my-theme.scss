@@ -1,0 +1,141 @@
+// @import '-@angular-material/theming';
+
+// @include mat-core();
+
+// // GAMA DE COLORES
+
+// $my-primary-color: (
+//   50: #e3f2fd,
+//   100: #bbdefb,
+//   200: #90caf9,
+//   300: #64b5f6,
+//   400: #42a5f5,
+//   500: #2196f3,
+//   600: #1e88e5,
+//   700: #1976d2,
+//   800: #1565c0,
+//   900: #0d47a1,
+//   A100: #82b1ff,
+//   A200: #448aff,
+//   A400: #2979ff,
+//   A700: #2962ff,
+//   contrast: (
+//     200: #000000,
+//     500: #ffff,
+//     700: #ffff,
+//   )
+// );
+
+
+// $my-accent-color: (
+//     50: #eceff1,
+//     100: #cfd8dc,
+//     200: #b0bec5,
+//     300: #90a4ae,
+//     400: #78909c,
+//     500: #607d8b,
+//     600: #546e7a,
+//     700: #455a64,
+//     800: #37474f,
+//     900: #263238,
+//     A100: #cfd8dc,
+//     A200: #b0bec5,
+//     A400: #78909c,
+//     A700: #455a64,
+//   contrast: (
+//     200: #000000,
+//     500: #ffff,
+//     700: #ffff,
+//   )
+// );
+
+// $my-warn-color: (
+//     50: #ffebee,
+//     100: #ffcdd2,
+//     200: #ef9a9a,
+//     300: #e57373,
+//     400: #ef5350,
+//     500: #f44336,
+//     600: #e53935,
+//     700: #d32f2f,
+//     800: #c62828,
+//     900: #b71c1c,
+//     A100: #ff8a80,
+//     A200: #ff5252,
+//     A400: #ff1744,
+//     A700: #d50000,
+//   contrast: (
+//     200: #000000,
+//     500: #ffff,
+//     700: #ffff,
+//   )
+// );
+
+
+// // PALETA DE COLORES
+
+// $my-palette-primary: mat-palette($my-primary-color);
+// $my-palette-accent: mat-palette($my-accent-color);
+// $my-palette-warn: mat-palette($my-warn-color);
+
+// // TEMA PROPIO
+
+// $my-theme: mat-light-theme((
+//     color: (
+//         primary: $my-palette-primary,
+//         accent: $my-palette-accent,
+//         warn: $my-palette-warn,
+//     )
+// ));
+
+// // APLICAR TEMA A ANGULAR
+
+// @include angular-material-theme($my-theme);
+
+
+// lo mismo pero más corto
+
+@import '~@angular/material/theming';
+@import 'fonts';
+
+@include mat-core();
+
+// GAMA DE COLORES
+
+$my-primary-color: mat-palette($mat-blue, 500);
+
+
+$my-accent-color: mat-palette($mat-blue-grey, 500);
+
+$my-warn-color: mat-palette($mat-red, 500);
+
+
+// PALETA DE COLORES
+
+$my-palette-primary: mat-palette($my-primary-color);
+$my-palette-accent: mat-palette($my-accent-color);
+$my-palette-warn: mat-palette($my-warn-color);
+
+// Tipografia 
+
+$my-typography: mat-typography-config(
+    $font-family: 'Nunito, sans-serif',
+);
+
+// TEMA PROPIO
+
+$my-theme: mat-light-theme(
+    $my-palette-primary, 
+    $my-palette-accent, 
+    $my-palette-warn
+);
+
+// APLICAR TEMA A ANGULAR
+
+@include angular-material-theme($my-theme);
+
+@include angular-material-typography($my-typography);
+
+
+html, body { height: 100%; }
+body { margin: 0; font-family: "Nunito", sans-serif; }

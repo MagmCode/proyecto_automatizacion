@@ -1,0 +1,101 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .reembolso-container {
+    flex: 1;
+    padding: 2rem;
+    max-width: 100vw;
+    margin: 0 auto;
+    width: 90%;
+  }
+  
+  .reembolso-title {
+    text-align: center;
+    margin-bottom: 4rem;
+    color: #3bb2f6;
+  }
+
+  ::ng-deep .mat-sort-header-arrow {
+    color: #ffffff !important;
+  }
+  
+  .reembolso-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  
+    .left-controls {
+      display: flex;
+      align-items: center;
+    }
+  
+    .right-controls {
+      display: flex;
+      align-items: center;
+    }
+  
+    mat-form-field {
+      width: 250px;
+    }
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    margin-right: 5px;
+    label {
+      color: #757575;
+      margin-left: 7px;
+    }
+  }
+  
+  .reembolso-table {
+    overflow-x: auto;
+  
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+  
+    th {
+      background-color: #0055a0;
+      color: white;
+      text-align: left;
+      padding: 1rem;
+      font-weight: bold;
+    }
+  
+    td {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+  
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+  
+    @media (max-width: 600px) {
+      th, td {
+        padding: 0.5rem;
+      }
+  
+      .reembolso-controls {
+        flex-direction: column;
+        align-items: stretch;
+  
+        .left-controls, .right-controls {
+          margin-bottom: 1rem;
+        }
+  
+        mat-form-field {
+          width: 100%;
+        }
+      }
+    }
+  }
+  

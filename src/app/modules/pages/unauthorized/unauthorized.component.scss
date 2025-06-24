@@ -1,0 +1,41 @@
+.unauthorized-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: url('/assets/images/background.png') no-repeat center center;
+    background-size: cover;
+    position: relative;
+  }
+  
+  .unauthorized-card {
+    padding: 2rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+
+    .block{
+      color: red;
+    font-size: 85px;
+    width: 100px;
+    // height: 86px;
+    }
+  
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #d32f2f; // Color rojo para indicar error
+    }
+  
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+  
+    button {
+      font-size: 1rem;
+      color: #ffff;
+    }
+  }
+  
