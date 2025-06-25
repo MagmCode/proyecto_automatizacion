@@ -33,6 +33,7 @@ import { HistorialAnalistComponent } from './modules/rol/analist/historial-anali
 import { DetalleReembolsoAnalistComponent } from './modules/rol/analist/detalle-reembolso-analist/detalle-reembolso-analist.component';
 import { DetalleCartaavalAnalistComponent } from './modules/rol/analist/detalle-cartaaval-analist/detalle-cartaaval-analist.component';
 import { ReportesAnalistComponent } from './modules/rol/analist/reportes-analist/reportes-analist.component';
+import { ConsultaAnalistComponent } from './modules/rol/analist/consulta-analist/consulta-analist.component';
 
 const routes: Routes = [
   // Main Routes
@@ -45,12 +46,12 @@ const routes: Routes = [
   { path: 'unauthorized', component: UnauthorizedComponent },
 
 
-// Routes to User's components
-  {path: 'user/home-page', component: HomePageComponent, canActivate: [UserGuard]},
-  {path: 'user/reembolso', component: ReembolsoComponent, canActivate: [UserGuard]},
-  {path: 'user/carta-aval', component: CartaAvalComponent, canActivate: [UserGuard]},
-  {path: 'user/editar-perfil', component: EditProfileComponent, canActivate: [UserGuard]},
-  {path: 'user/cambiar-password', component: ChangePasswordComponent, canActivate: [UserGuard]},
+// // Routes to User's components
+//   {path: 'user/home-page', component: HomePageComponent, canActivate: [UserGuard]},
+//   {path: 'user/reembolso', component: ReembolsoComponent, canActivate: [UserGuard]},
+//   {path: 'user/carta-aval', component: CartaAvalComponent, canActivate: [UserGuard]},
+//   {path: 'user/editar-perfil', component: EditProfileComponent, canActivate: [UserGuard]},
+//   {path: 'user/cambiar-password', component: ChangePasswordComponent, canActivate: [UserGuard]},
 
 // Routes to Admin's components
   {path: 'admin/dashboard', component: DashboardComponent, canActivate: [AdminGuard]},
@@ -65,17 +66,17 @@ const routes: Routes = [
   {path: 'admin/carta-aval/detalle/:id', component: DetalleCartaavalComponent, canActivate: [AdminGuard]},
 
   // Routes to Analist's components
-  {path: 'analist/home-page', component: HomepageAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/reembolso', component: ReembolsoAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/carta-aval', component: CartaavalAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/editar-perfil', component: EdirProfileAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/cambiar-password', component: ChangePasswordAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/historial', component: HistorialAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/reportes', component: ReportesAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/reembolso/detalle/:id', component: DetalleReembolsoAnalistComponent, canActivate: [AnalistGuard]},
-  {path: 'analist/carta-aval/detalle/:id', component: DetalleCartaavalAnalistComponent, canActivate: [AnalistGuard]},
-  
-  
+  {path: 'analist/home-page', component: HomepageAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/reembolso', component: ReembolsoAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/carta-aval', component: CartaavalAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/editar-perfil', component: EdirProfileAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/cambiar-password', component: ChangePasswordAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/historial', component: HistorialAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/reportes', component: ReportesAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/reembolso/detalle/:id', component: DetalleReembolsoAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/carta-aval/detalle/:id', component: DetalleCartaavalAnalistComponent, canActivate: [NoAuthGuard]},
+  {path: 'analist/consulta', component: ConsultaAnalistComponent, canActivate: [NoAuthGuard]},
+
 ];
 
 @NgModule({

@@ -2,12 +2,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 40px 16px 32px;
+  padding: 5px 40px 5px 32px;
   background: linear-gradient(
     90deg,
     rgba(164, 222, 244, 1) 0%,
     rgba(57, 184, 232, 1) 30%,
-    rgba(40, 140, 203, 1) 55%,
+    rgb(40, 140, 203) 55%,
     rgba(29, 112, 185, 1) 85%
   );
   color: white;
@@ -22,7 +22,7 @@
     align-items: center;
 
     .logo-header {
-      width: 6rem;
+      width: 4.7rem;
   }
 }
 
@@ -31,6 +31,7 @@
     gap: 4rem;
     margin-left: auto;
     margin-right: 90px;
+    font-size: 0.9rem;
 
     a {
       color: white;
@@ -48,11 +49,11 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 1.5rem; // Ajusta el espacio entre los elementos
+    gap: 0.7rem; // Ajusta el espacio entre los elementos
     position: relative;
 
     .user-icon {
-      font-size: 3.5rem;
+      font-size: 2.5rem;
       // padding-right: 2.5rem;
       flex-shrink: 0;
     }
@@ -62,10 +63,11 @@
       text-align: center;
       cursor: pointer;
       flex-grow: 1;
+      font-size: 0.9rem;
     }
 
     .arrow-icon {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       margin-left: -0.2rem;
     }
   }
@@ -96,16 +98,17 @@
     text-decoration: none;
     color: white;
     white-space: nowrap;
+    font-size: 0.8rem;
 
     &:hover {
       cursor: pointer;
       text-decoration: none;
       font-weight: 500;
-      font-size: 1.05em;
+      font-size: 0.85em;
     }
 
     .user-menu-icon {
-      font-size: 1.1rem;
+      font-size: 1.0rem;
     }
   }
 }

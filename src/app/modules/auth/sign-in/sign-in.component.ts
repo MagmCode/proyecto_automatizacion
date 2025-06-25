@@ -52,44 +52,46 @@ export class SignInComponent implements OnInit {
   // login.component.ts
 // Método para manejar el envío del formulario de inicio de sesión
 onSubmit() {
-  // Marca todos los campos como "touched" para forzar la validación
-  this.loginForm.markAllAsTouched();
+  // // Marca todos los campos como "touched" para forzar la validación
+  // this.loginForm.markAllAsTouched();
 
-  // Si el formulario no es válido, no continúes
-  if (this.loginForm.invalid) {
-    return;
-  }
+  // // Si el formulario no es válido, no continúes
+  // if (this.loginForm.invalid) {
+  //   return;
+  // }
 
-  // Si el formulario es válido, procede con el inicio de sesión
-  this.isLoading = true;
+  // // Si el formulario es válido, procede con el inicio de sesión
+  // this.isLoading = true;
 
-  const { username, password } = this.loginForm.value;
+  // const { username, password } = this.loginForm.value;
 
-  this.authService.login(username, password).subscribe(
-    (response: any) => {
-      this.isLoading = false;
-      const token = response.access;
-      const rol = response.rol;  // Obtener el rol del usuario
+  // this.authService.login(username, password).subscribe(
+  //   (response: any) => {
+  //     this.isLoading = false;
+  //     const token = response.access;
+  //     const rol = response.rol;  // Obtener el rol del usuario
 
-      // Guardar el token y el rol en la sesión
-      this.authService.setSession(token, rol === 'admin');
+  //     // Guardar el token y el rol en la sesión
+  //     this.authService.setSession(token, rol === 'admin');
 
-      // Redirigir según el rol del usuario
-      if (rol === 'admin') {
-        this.router.navigate(['/admin/dashboard']);
-      } else if (rol === 'analista') {
-        this.router.navigate(['/analist/home-page']);
-      } else if (rol === 'cliente') {
-        this.router.navigate(['/user/home-page']);
-      } else {
-        this.router.navigate(['/Login']); // Redirigir a login si el rol no es válido
-      }
-    },
-    (error) => {
-      this.isLoading = false;
-      this.showSnackBar(error);
-    }
-  );
+  //     // Redirigir según el rol del usuario
+  //     if (rol === 'admin') {
+  //       this.router.navigate(['/admin/dashboard']);
+  //     } else if (rol === 'analista') {
+  //       this.router.navigate(['/analist/home-page']);
+  //     } else if (rol === 'cliente') {
+  //       this.router.navigate(['/user/home-page']);
+  //     } else {
+  //       this.router.navigate(['/Login']); // Redirigir a login si el rol no es válido
+  //     }
+  //   },
+  //   (error) => {
+  //     this.isLoading = false;
+  //     this.showSnackBar(error);
+  //   }
+  // );
+
+  this.router.navigate(['/analist/home-page']);
 }
 
 

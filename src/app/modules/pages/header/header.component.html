@@ -7,17 +7,19 @@
   <!-- Menú para usuarios (clientes) -->
   <nav *ngIf="!isAdmin && !isAnalist" class="nav-links">
     <a (click)="home()">Inicio</a>
-    <a (click)="reembolso()">Reembolso</a>
-    <a (click)="cartaAval()">Carta Aval</a>
+    <!-- <a (click)="reembolso()">Reembolso</a>
+    <a (click)="cartaAval()">Carta Aval</a> -->
+    <a (click)="consultaAnalist()">Consulta</a>
+
   </nav>
   
   <!-- Menú para analist -->
   <nav *ngIf="isAnalist" class="nav-links">
     <a (click)="homeAnalist()">Inicio</a>
-    <a (click)="historialAnalist()">Historial</a>
+    <!-- <a (click)="historialAnalist()">Historial</a>
     <a (click)="reportesAnalist()">Reportes</a>
-    <a (click)="reembolsoAnalist()">Reembolso</a>
-    <a (click)="cartaAvalAnalist()">Carta Aval</a>
+    <a (click)="reembolsoAnalist()">Reembolso</a> -->
+    <a (click)="consultaAnalist()">Consulta</a>
   </nav>
   
   <!-- Menú para admin -->
@@ -32,18 +34,24 @@
   <div class="user-info" (mouseenter)="showMenu()" (mouseleave)="hideMenu()">
     <mat-icon class="user-icon">person</mat-icon>
     <span class="user-text">
-      {{ isAdmin ? 'Admin' : name  }}
+      <!-- {{ isAdmin ? 'Admin' : name  }} -->
+        nombre
       <mat-icon class="arrow-icon">arrow_drop_down</mat-icon>
     </span>
     <div class="user-menu" *ngIf="menuOpen" (mouseenter)="showMenu()" (mouseleave)="hideMenu()">
+
+      <a>
+        Rol
+      </a>
+      
       <a (click)="isAnalist ? editAdminProfileAnalist() : editProfile()">
         Editar Perfil
         <mat-icon class="user-menu-icon">edit</mat-icon>
       </a>
-      <a (click)="isAnalist ? changePasswordAdminAnalist() : changePassword()">
-        Cambio de clave
+      <!-- <a (click)="isAnalist ? changePasswordAdminAnalist() : changePassword()">
+        <!-- Cambio de clave
         <mat-icon class="user-menu-icon">password</mat-icon>
-      </a>
+      </a>  -->
       <a *ngIf="isAnalist" (click)="assignProfileAnalist()">
         Asignar Perfil
         <mat-icon class="user-menu-icon">assignment</mat-icon>

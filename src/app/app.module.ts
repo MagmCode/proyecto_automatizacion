@@ -39,7 +39,9 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { CsrfInterceptor } from './services/csrf.interceptor';
 // import { MatListModule } from '@angular/material/list';
-
+import { MAT_DATE_FORMATS, DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
+import { CUSTOM_DATE_FORMATS } from './core/custom-date-formats';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 
 
 
@@ -76,6 +78,7 @@ import { ReportesAnalistComponent } from './modules/rol/analist/reportes-analist
 import { CedulaLengthDirective } from './directives/cedula-length.directive';
 import { TelefonoLengthDirective } from './directives/telefono-length.directive';
 import { MaxLengthDirective } from './directives/max-length.directive';
+import { ConsultaAnalistComponent } from './modules/rol/analist/consulta-analist/consulta-analist.component';
 
 
 @NgModule({
@@ -114,6 +117,7 @@ import { MaxLengthDirective } from './directives/max-length.directive';
     CedulaLengthDirective,
     TelefonoLengthDirective,
     MaxLengthDirective,
+    ConsultaAnalistComponent,
   ],
   imports: [
     BrowserModule,
@@ -160,6 +164,10 @@ import { MaxLengthDirective } from './directives/max-length.directive';
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: CsrfInterceptor, multi: true },
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
+    { provide: MAT_DATE_FORMATS, useValue: CUSTOM_DATE_FORMATS },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    { provide: MAT_MOMENT_DATE_ADAPTER_OPTIONS, useValue: { useUtc: false } }
   ],
   bootstrap: [AppComponent]
 })

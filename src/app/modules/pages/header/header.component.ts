@@ -76,6 +76,9 @@ export class HeaderComponent implements OnInit {
   changePasswordAdminAnalist(): void {
     this.router.navigate(['analist/cambiar-password']);
   }
+  consultaAnalist(): void {
+    this.router.navigate(['analist/consulta']);
+  }
 
   // Métodos para admin
   assignProfile(): void {
