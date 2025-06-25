@@ -1,0 +1,34 @@
+<app-header></app-header>
+<mat-tab-group class="centered-tab-group">
+  <mat-tab label="Consulta">
+    <div class="consulta-container">
+      <mat-card class="consulta-card">
+        <form class="consulta-form">
+          <div class="fecha-field-wrapper">
+            <div class="fecha-label-wrapper">
+              <label class="fecha-label">Fecha</label>
+            </div>
+            <mat-form-field appearance="outline" class="fecha-campo">
+              <input matInput [max]="today" [matDatepicker]="picker" [value]="today" [readonly]="true"> 
+              <button mat-icon-button matSuffix type="button" (click)="picker.open()">
+                <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
+              </button>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <div class="consulta-actions">
+            <button mat-raised-button class="button button-1" type="submit">Buscar</button>
+            <button mat-raised-button class="button button-2" type="button">Salir</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Resultado">
+    <div class="resultado-container">
+      <!-- Aquí se mostrará el resultado de la consulta -->
+      <ng-content select="[resultado-consulta]"></ng-content>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+<app-footer></app-footer>

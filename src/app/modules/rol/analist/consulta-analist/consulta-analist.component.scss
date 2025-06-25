@@ -1,0 +1,103 @@
+.centered-tab-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.consulta-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 70vh;
+  width: 100vw;
+}
+
+.consulta-card {
+  min-width: 400px;
+  padding: 32px;
+  height: 300px;
+  box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.18), 0 0px 0px 1px rgba(0,0,0,0.10);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.consulta-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  .button {
+    &:hover {
+        font-size: 0.9rem;
+    }
+  }
+
+  .button-1 {
+    color: #fff;
+    background-color: #288ccb;
+  }
+
+  .button-2 {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #288ccb;
+    color: #288ccb;
+    background-color: transparent;
+  }
+}
+
+
+
+.resultado-container {
+  padding: 32px;
+}
+
+.consulta-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.fecha-label-wrapper {
+  width: 100%;
+  text-align: left;
+  margin-bottom: 2px;
+  margin-left: 155px;
+}
+
+.fecha-label {
+  font-weight: 500;
+  font-size: 1rem;
+  color: #828282;
+}
+
+.fecha-field-wrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  width: 100%;
+}
+
+.fecha-campo {
+  min-width: 0;
+  width: 250px;
+  max-width: 100%;
+}
+
+.custom-calendar-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08)) brightness(0) saturate(100%) invert(22%) sepia(99%) saturate(1812%) hue-rotate(181deg) brightness(92%) contrast(98%);
+  vertical-align: middle;
+  position: relative;
+  top: -6px;
+}
+
+:host ::ng-deep .mat-form-field:not(.mat-form-field-appearance-legacy) .mat-form-field-suffix .mat-icon-button {
+  height: 0 !important;
+}
