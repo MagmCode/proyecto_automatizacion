@@ -31,4 +31,7 @@ export class HomepageAnalistComponent implements OnInit {
   cartaAvalAnalist(): void {
     this.router.navigate(['analist/carta-aval']);
   }
+  consultaAnalist(): void {
+    this.router.navigate(['analist/consulta']);
+  }
 }
