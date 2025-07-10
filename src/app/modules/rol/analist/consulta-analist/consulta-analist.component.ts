@@ -1,6 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-consulta-analist',
@@ -10,6 +11,7 @@ import { MatPaginator } from '@angular/material/paginator';
 export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
 
   today: Date = new Date();
+  tabIndex = 0;
 
   displayedColumns: string[] = [
     'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
@@ -161,7 +163,9 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  constructor() { }
+  constructor(
+    private _router: Router
+  ) { }
 
   ngOnInit(): void {}
 
@@ -182,5 +186,13 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
   exportarTabla() {
     // Implementa aquí la lógica de exportar (ejemplo: CSV/Excel)
     alert('Funcionalidad de exportar pendiente de implementar.');
+  }
+
+  consultar() {
+    this.tabIndex = 1;
+  }
+
+  salir(): void {
+    this._router.navigate(['/analist/home-page']);
   }
 }

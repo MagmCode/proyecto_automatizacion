@@ -1,5 +1,5 @@
 <app-header></app-header>
-<mat-tab-group class="centered-tab-group">
+<mat-tab-group class="centered-tab-group" [selectedIndex]="tabIndex" (selectedIndexChange)="tabIndex = $event">
   <mat-tab label="Consulta">
     <div class="consulta-container">
       <mat-card class="consulta-card">
@@ -17,8 +17,8 @@
             </mat-form-field>
           </div>
           <div class="consulta-actions">
-            <button mat-raised-button class="button button-1" type="submit">Buscar</button>
-            <button mat-raised-button class="button button-2" type="button">Salir</button>
+            <button mat-raised-button class="button button-1" type="button" (click)="consultar()">Buscar</button>
+            <button mat-raised-button class="button button-2" type="button" (click)="salir()">Salir</button>
           </div>
         </form>
       </mat-card>
@@ -38,7 +38,7 @@
               <mat-icon>download</mat-icon>
               Exportar
             </button>
-          </div>
+          </div> 
         </div>
         <mat-card-content>
           <div class="table-container">

@@ -91,7 +91,7 @@ onSubmit() {
   //   }
   // );
 
-  this.router.navigate(['/analist/home-page']);
+  this.router.navigate(['/admin/dashboard']);
 }
 
 

@@ -37,7 +37,7 @@ export class HeaderComponent implements OnInit {
     if (this.sidenavOpen) {
       this.sidenavOpen = false;
     }
-    this.router.navigate(['user/home-page']);
+    this.router.navigate(['analist/home-page']);
   }
   reembolso(): void {
     this.router.navigate(['user/reembolso']);
