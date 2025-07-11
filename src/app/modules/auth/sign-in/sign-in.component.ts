@@ -91,7 +91,10 @@ onSubmit() {
   //   }
   // );
 
-  this.router.navigate(['/analist/home-page']);
+  localStorage.setItem('access_token', 'fake-token');
+  localStorage.setItem('rol', 'admin');
+  this.authService.updateUserData({ role: 'admin' });
+  this.router.navigate(['/admin/dashboard']);
 }
 
 
