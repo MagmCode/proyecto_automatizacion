@@ -6,6 +6,8 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { EditProfileAdminComponent } from './edit-profile-admin/edit-profile-admin.component';
 import { ChangePasswordAdminComponent } from './change-password-admin/change-password-admin.component';
 import { AsignProfileComponent } from './asign-profile/asign-profile.component';
+import { ConsultaAdminComponent } from './consulta-admin/consulta-admin.component';
+import { ReportesAdminComponent } from './reportes-admin/reportes-admin.component';
 
 @NgModule({
   declarations: [
@@ -13,10 +15,13 @@ import { AsignProfileComponent } from './asign-profile/asign-profile.component';
     EditProfileAdminComponent,
     ChangePasswordAdminComponent,
     AsignProfileComponent,
+    ConsultaAdminComponent,
+    ReportesAdminComponent,
   ],
   imports: [
     SharedModule,
-    AdminRoutingModule
+    AdminRoutingModule,
+    CommonModule
   ]
 })
 export class AdminModule { }

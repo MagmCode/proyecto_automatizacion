@@ -5,6 +5,7 @@ import { HomepageAnalistComponent } from './homepage-analist/homepage-analist.co
 import { EdirProfileAnalistComponent } from './edir-profile-analist/edir-profile-analist.component';
 import { ChangePasswordAnalistComponent } from './change-password-analist/change-password-analist.component';
 import { ConsultaAnalistComponent } from './consulta-analist/consulta-analist.component';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { ConsultaAnalistComponent } from './consulta-analist/consulta-analist.co
   ],
   imports: [
     SharedModule,
-    AnalistRoutingModule
+    AnalistRoutingModule,
+    CommonModule
   ]
 })
 export class AnalistModule { }

@@ -90,24 +90,20 @@ export class HeaderComponent implements OnInit {
     }
     this.router.navigate(['admin/dashboard']);
   }
-  historial(): void {
-    this.router.navigate(['admin/historial']);
+    consultaAdmin(): void {
+    this.router.navigate(['admin/consulta']);
   }
-  reportes(): void {
+  reportesAdmin(): void {
     this.router.navigate(['admin/reportes']);
   }
-  adminReembolso(): void {
-    this.router.navigate(['admin/reembolso']);
-  }
-  adminCartaAval(): void {
-    this.router.navigate(['admin/carta-aval']);
-  }
+
   editAdminProfile(): void {
     this.router.navigate(['admin/editar-perfil']);
   }
   changePasswordAdmin(): void {
     this.router.navigate(['admin/cambiar-password']);
   }
+
 
   // Métodos para el Sidenav y menú
   toggleSidenav(): void {

@@ -26,6 +26,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CedulaLengthDirective } from 'src/app/directives/cedula-length.directive';
 import { TelefonoLengthDirective } from 'src/app/directives/telefono-length.directive';
 import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
+import { MatDialogModule } from '@angular/material/dialog';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -56,7 +58,9 @@ import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
     MatNativeDateModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FormsModule,
+    MatDialogModule
   ],
   exports: [
     HeaderComponent,
@@ -83,7 +87,9 @@ import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
     MatNativeDateModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    FormsModule,
+    MatDialogModule
   ]
 })
 export class SharedModule { }

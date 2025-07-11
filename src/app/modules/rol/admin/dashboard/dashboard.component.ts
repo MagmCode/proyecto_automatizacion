@@ -8,20 +8,14 @@ import { Router } from "@angular/router";
   styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
-  constructor(private authService: AuthService, private router: Router) {}
+    constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit(): void {}
 
-  adminCartaAval() {
-    this.router.navigate(["admin/carta-aval"]);
-  }
-  adminReembolso() {
-    this.router.navigate(["admin/reembolso"]);
-  }
-  historial() {
-    this.router.navigate(["admin/historial"]);
-  }
-  reportes() {
-    this.router.navigate(["admin/reportes"]);
-  }
+consultaAdmin() {
+  this.router.navigate(['admin/consulta']);
+}
+reportesAdmin() {
+  this.router.navigate(['admin/reportes']);
+}
 }
