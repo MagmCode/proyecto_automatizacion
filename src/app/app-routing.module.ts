@@ -4,17 +4,17 @@ import { NoAuthGuard } from "./core/guards/no-auth.guard";
 import { AuthGuard } from './core/guards/auth.guard'; 
 
 import { UnauthorizedComponent } from './modules/pages/unauthorized/unauthorized.component';
+import { AnalistGuard } from './core/guards/analist.guard';
 
 
 const routes: Routes = [
   // Main Routes
 
-  { path: '', redirectTo: 'sign-in', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   {
-    path: 'sign-in',
+    path: 'auth',
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
-  { path: '**', redirectTo: 'sign-in' },
   { path: 'unauthorized', component: UnauthorizedComponent },
 
   {

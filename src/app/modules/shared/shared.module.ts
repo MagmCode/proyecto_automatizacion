@@ -21,6 +21,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatDateRangeInput, MatDateRangePicker, MatDatepickerToggle, MatDatepickerContent } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CedulaLengthDirective } from 'src/app/directives/cedula-length.directive';
 import { TelefonoLengthDirective } from 'src/app/directives/telefono-length.directive';
@@ -54,6 +55,7 @@ import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
     MatOptionModule,
     MatNativeDateModule,
     MatTooltipModule,
+    MatSnackBarModule,
     MatProgressSpinnerModule
   ],
   exports: [
@@ -80,6 +82,7 @@ import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
     MatOptionModule,
     MatNativeDateModule,
     MatTooltipModule,
+    MatSnackBarModule,
     MatProgressSpinnerModule
   ]
 })
