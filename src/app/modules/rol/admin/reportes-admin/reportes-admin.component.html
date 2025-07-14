@@ -1,1 +1,153 @@
-<p>reportes-admin works!</p>
+<app-header></app-header>
+<mat-tab-group class="centered-tab-group">
+  <mat-tab label="Búsqueda">
+    <div class="consulta-container">
+      <mat-card class="consulta-card">
+        <form class="consulta-form">
+          <div class="busqueda-form-grid">
+            <div>
+              <div class="label-wrapper">
+                <label class="label">Fecha Desde</label>
+              </div>
+              <mat-form-field appearance="outline" class="fecha-campo">
+                <input matInput [matDatepicker]="pickerDesde" name="fechaDesde">
+                <button mat-icon-button matSuffix type="button" (click)="pickerDesde.open()">
+                  <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
+                </button>
+                <mat-datepicker #pickerDesde></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div>
+              <div class="label-wrapper">
+                <label class="label">Fecha Hasta</label>
+              </div>
+              <mat-form-field appearance="outline" class="fecha-campo">
+                <input matInput [matDatepicker]="pickerHasta" name="fechaHasta">
+                <button mat-icon-button matSuffix type="button" (click)="pickerHasta.open()">
+                  <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
+                </button>
+                <mat-datepicker #pickerHasta></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div>
+              <div class="label-wrapper">
+                <label class="label">Aseguradora</label>
+              </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-select name="aseguradora" >
+                  <mat-option *ngFor="let item of aseguradoras" [value]="item">{{ item }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div>
+              <div class="label-wrapper">
+                <label class="label">Contratante</label>
+              </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-select name="contratante">
+                  <mat-option *ngFor="let item of contratantes" [value]="item">{{ item }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div>
+              <div class="label-wrapper">
+                <label class="label">Asegurado</label>
+              </div>
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-select name="asegurado">
+                  <mat-option *ngFor="let item of asegurados" [value]="item">{{ item }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="consulta-actions">
+            <button mat-raised-button class="button button-1" type="button">Buscar</button>
+            <button mat-raised-button class="button button-2" type="button">Salir</button>
+          </div>
+        </form>
+      </mat-card>
+    </div>
+  </mat-tab>
+  <mat-tab label="Resultado">
+    <div class="resultado-container">
+      <mat-card class="center-card">
+        <div class="table-toolbar">
+          <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 8px;">
+            <button mat-raised-button class="button-exportar">
+              <mat-icon>download</mat-icon>
+              Exportar
+            </button>
+          </div>
+        </div>
+        <mat-card-content>
+          <div class="table-container">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+              <ng-container matColumnDef="aseguradora">
+                <th mat-header-cell *matHeaderCellDef>Aseguradora</th>
+                <td mat-cell *matCellDef="let element">{{ element.aseguradora }}</td>
+              </ng-container>
+              <ng-container matColumnDef="ramo">
+                <th mat-header-cell *matHeaderCellDef>Ramo</th>
+                <td mat-cell *matCellDef="let element">{{ element.ramo }}</td>
+              </ng-container>
+              <ng-container matColumnDef="formaPago">
+                <th mat-header-cell *matHeaderCellDef>Forma de pago</th>
+                <td mat-cell *matCellDef="let element">{{ element.formaPago }}</td>
+              </ng-container>
+              <ng-container matColumnDef="nroPoliza">
+                <th mat-header-cell *matHeaderCellDef>Nro Póliza</th>
+                <td mat-cell *matCellDef="let element">{{ element.nroPoliza }}</td>
+              </ng-container>
+              <ng-container matColumnDef="contratante">
+                <th mat-header-cell *matHeaderCellDef>Contratante</th>
+                <td mat-cell *matCellDef="let element">{{ element.contratante }}</td>
+              </ng-container>
+              <ng-container matColumnDef="asegurado">
+                <th mat-header-cell *matHeaderCellDef>Asegurado</th>
+                <td mat-cell *matCellDef="let element">{{ element.asegurado }}</td>
+              </ng-container>
+              <ng-container matColumnDef="vigencia">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col">Vigencia</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  <span *ngFor="let f of element.vigencia.split(' - ')">{{f}}<br></span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="trimestre1">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col">I trimestre</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  <span *ngFor="let f of element.trimestre1.split(' - ')">{{f}}<br></span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="trimestre2">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col">II trimestre</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  <span *ngFor="let f of element.trimestre2.split(' - ')">{{f}}<br></span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="trimestre3">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col">III trimestre</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  <span *ngFor="let f of element.trimestre3.split(' - ')">{{f}}<br></span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="trimestre4">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col">IV trimestre</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  <span *ngFor="let f of element.trimestre4.split(' - ')">{{f}}<br></span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="renovacion">
+                <th mat-header-cell *matHeaderCellDef>Renovación</th>
+                <td mat-cell *matCellDef="let element">{{ element.renovacion }}</td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </div>
+          <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </mat-tab>
+</mat-tab-group>
+<app-footer></app-footer>
