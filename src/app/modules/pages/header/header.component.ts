@@ -23,7 +23,7 @@ export class HeaderComponent implements OnInit {
     const role = this.authService.getUserRole();
     this.isAdmin = role === 'admin';
     this.isAnalist = role === 'analista';
-    this.name = this.authService.getName();
+    // this.name = this.authService.getName();
   }
 
   // Métodos de navegación para usuarios (cliente)
@@ -122,6 +122,14 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
+    this.authService.logout().subscribe({
+    next: () => {
+      this.router.navigate(['/auth/login']);
+    },
+    error: (err) => {
+      console.error('Error:', err);
+      this.router.navigate(['/auth/login']); // Redirigir igual
+    }
+  });
   }
 }

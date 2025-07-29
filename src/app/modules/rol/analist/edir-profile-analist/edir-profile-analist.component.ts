@@ -42,28 +42,28 @@ export class EdirProfileAnalistComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.profileForm.valid) {
-      this.authService.updateUserProfile(this.profileForm.value).subscribe(
-        (response) => {
-          console.log('Perfil actualizado correctamente', response);
+    // if (this.profileForm.valid) {
+    //   this.authService.updateUserProfile(this.profileForm.value).subscribe(
+    //     (response) => {
+    //       console.log('Perfil actualizado correctamente', response);
   
-          // Actualizar el localStorage con los nuevos datos
-          const updatedData = this.profileForm.value;
-          localStorage.setItem('first_name', updatedData.first_name);
-          localStorage.setItem('last_name', updatedData.last_name);
-          localStorage.setItem('email', updatedData.email);
-          localStorage.setItem('telefono', updatedData.telefono);
-          localStorage.setItem('telefono_opcional', updatedData.telefono_opcional || '');
+    //       // Actualizar el localStorage con los nuevos datos
+    //       const updatedData = this.profileForm.value;
+    //       localStorage.setItem('first_name', updatedData.first_name);
+    //       localStorage.setItem('last_name', updatedData.last_name);
+    //       localStorage.setItem('email', updatedData.email);
+    //       localStorage.setItem('telefono', updatedData.telefono);
+    //       localStorage.setItem('telefono_opcional', updatedData.telefono_opcional || '');
   
-          // Actualizar el estado en el AuthService
-          this.authService.updateUserData(updatedData);
+    //       // Actualizar el estado en el AuthService
+    //       this.authService.updateUserData(updatedData);
   
-          alert('Perfil actualizado correctamente');
-        },
-        (error) => {
-          console.error('Error al actualizar el perfil', error);
-        }
-      );
-    }
+    //       alert('Perfil actualizado correctamente');
+    //     },
+    //     (error) => {
+    //       console.error('Error al actualizar el perfil', error);
+    //     }
+    //   );
+    // }
   }
 }

@@ -1,12 +1,8 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from 'src/app/core/auth/auth.service'; 
+import { AuthService } from 'src/app/core/auth/auth.service';
 import { MatSnackBar } from "@angular/material/snack-bar";
-
-
-
-
 
 @Component({
   selector: 'app-sign-in',
@@ -28,126 +24,139 @@ export class SignInComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private _snackBar: MatSnackBar,
-    
   ) {}
 
   ngOnInit(): void {
+    this.initializeForm();
+  }
+
+  initializeForm(): void {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required, this.noExponentNotation]],
-      password: ['', Validators.required]
+      username: ['', [
+        Validators.required,
+        Validators.minLength(6),
+        Validators.maxLength(10),
+        this.onlyNumbersValidator
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(6)
+      ]]
     });
 
     this.username = this.loginForm.get('username') as FormControl;
     this.password = this.loginForm.get('password') as FormControl;
   }
 
-  noExponentNotation(control: AbstractControl): { [key: string]: boolean } | null {
+  // Validador personalizado para solo números (cédula)
+  onlyNumbersValidator(control: AbstractControl): { [key: string]: boolean } | null {
     const value = control.value;
-    if (value && value.toString().toLowerCase().includes('e')) {
-      return { 'noExponentNotation': true };
+    if (value && !/^\d+$/.test(value)) {
+      return { 'onlyNumbers': true };
     }
     return null;
   }
 
-  // login.component.ts
-// Método para manejar el envío del formulario de inicio de sesión
-onSubmit() {
-  // // Marca todos los campos como "touched" para forzar la validación
-  // this.loginForm.markAllAsTouched();
+  // Método para manejar el envío del formulario
+  onSubmit(): void {
+    this.loginForm.markAllAsTouched();
 
-  // // Si el formulario no es válido, no continúes
-  // if (this.loginForm.invalid) {
-  //   return;
-  // }
+    if (this.loginForm.invalid) {
+      return;
+    }
 
-  // // Si el formulario es válido, procede con el inicio de sesión
-  // this.isLoading = true;
+    this.isLoading = true;
+    this.errorMessage = null;
 
-  // const { username, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
-  // this.authService.login(username, password).subscribe(
-  //   (response: any) => {
-  //     this.isLoading = false;
-  //     const token = response.access;
-  //     const rol = response.rol;  // Obtener el rol del usuario
-
-  //     // Guardar el token y el rol en la sesión
-  //     this.authService.setSession(token, rol === 'admin');
-
-  //     // Redirigir según el rol del usuario
-  //     if (rol === 'admin') {
-  //       this.router.navigate(['/admin/dashboard']);
-  //     } else if (rol === 'analista') {
-  //       this.router.navigate(['/analist/home-page']);
-  //     } else if (rol === 'cliente') {
-  //       this.router.navigate(['/user/home-page']);
-  //     } else {
-  //       this.router.navigate(['/Login']); // Redirigir a login si el rol no es válido
-  //     }
-  //   },
-  //   (error) => {
-  //     this.isLoading = false;
-  //     this.showSnackBar(error);
-  //   }
-  // );
-
-  localStorage.setItem('access_token', 'fake-token');
-  localStorage.setItem('rol', 'admin');
-  this.authService.updateUserData({ role: 'admin' });
-  this.router.navigate(['/admin/dashboard']);
-}
-
-
-
-ngAfterViewInit() {
-  this.inputFields.forEach(input => {
-    input.nativeElement.addEventListener('copy', this.disableCopyPaste);
-    input.nativeElement.addEventListener('paste', this.disableCopyPaste);
-    input.nativeElement.addEventListener('cut', this.disableCopyPaste);
-  });
-}
-
-disableCopyPaste(event: Event): void {
-  event.preventDefault();
-}
-
-  
-
-  showSnackBar(message: string) {
-    this._snackBar.open(message, 'Cerrar', {
-      duration: 5000,  // Duración del mensaje en milisegundos (5 segundos)
-      horizontalPosition: 'center',  // Posición horizontal
-      verticalPosition: 'bottom',    // Posición vertical
-      panelClass: ['error-snackbar']  // Clase CSS personalizada (opcional)
+    this.authService.login(username, password).subscribe({
+      next: () => {
+        this.isLoading = false;
+        
+        // Redirigir según el rol
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin/dashboard']);
+        } else if (this.authService.isAnalista()) {
+          this.router.navigate(['/analist/home-page']);
+        } else {
+          this.router.navigate(['/acceso-denegado']);
+        }
+      },
+      error: (error) => {
+        this.isLoading = false;
+        this.handleLoginError(error);
+      }
     });
   }
 
-  
-  togglePasswordVisibility() {
+  // Manejo de errores de login
+  private handleLoginError(error: any): void {
+    let errorMessage = "Error en el inicio de sesión";
+    
+    if (error.includes("Credenciales incorrectas")) {
+      errorMessage = "Cédula o contraseña incorrectos";
+    } else if (error.includes("Sesión expirada")) {
+      errorMessage = "Sesión expirada, por favor ingrese nuevamente";
+    }
+
+    this.showSnackBar(errorMessage);
+  }
+
+  // Mostrar notificación
+  showSnackBar(message: string): void {
+    this._snackBar.open(message, 'Cerrar', {
+      duration: 5000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom',
+      panelClass: ['error-snackbar']
+    });
+  }
+
+  // Alternar visibilidad de contraseña
+  togglePasswordVisibility(): void {
     this.hide = !this.hide;
   }
 
+  // Mensajes de error para formularios
   getErrorMessage(controlName: string): string {
     const control = this.loginForm.get(controlName);
-  
+
     if (control?.hasError('required')) {
-      return 'Este campo es requerido.';
+      return 'Este campo es requerido';
     }
-  
-    if (controlName === 'username' && control?.hasError('noExponentNotation')) {
-      return 'No se permite la notación científica (e).';
+
+    if (controlName === 'username') {
+      if (control?.hasError('minlength') || control?.hasError('maxlength')) {
+        return 'La cédula debe tener entre 6 y 10 dígitos';
+      }
+      if (control?.hasError('onlyNumbers')) {
+        return 'Solo se permiten números';
+      }
     }
-  
-    return 'Campo inválido';
+
+    if (controlName === 'password' && control?.hasError('minlength')) {
+      return 'La contraseña debe tener al menos 6 caracteres';
+    }
+
+    return '';
   }
 
-
-  signUp() {
-    this.router.navigate(['/sign-up']);
+  // Navegación
+  forgotPassword(): void {
+    this.router.navigate(['/forgot-password']);
   }
 
-  forgotPassword(){
-    this.router.navigate(['/forgot-password'])
+  // Prevenir copiar/pegar en campos
+  ngAfterViewInit(): void {
+    this.inputFields.forEach(input => {
+      input.nativeElement.addEventListener('copy', this.disableCopyPaste);
+      input.nativeElement.addEventListener('paste', this.disableCopyPaste);
+      input.nativeElement.addEventListener('cut', this.disableCopyPaste);
+    });
   }
-  
+
+  disableCopyPaste(event: Event): void {
+    event.preventDefault();
+  }
 }

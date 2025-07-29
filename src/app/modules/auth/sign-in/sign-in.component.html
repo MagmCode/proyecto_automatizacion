@@ -14,7 +14,7 @@
         <mat-form-field appearance="outline" class="full-width mat-form-field-appearance-outline">
           <input
             matInput
-            type="number"
+            type="text"
             formControlName="username"
             id="username"
             appMaxLength
@@ -62,21 +62,13 @@
 
       <!-- Botón: Ingresar -->
       <div class="login-button">
-        <button
-          mat-raised-button
-          color="primary"
-          (click)="onSubmit()"
-        >
-          <ng-container *ngIf="!isLoading"> Ingresar </ng-container>
-          <ng-container *ngIf="isLoading">
-            <mat-progress-spinner
-              [diameter]="24"
-              mode="indeterminate"
-              class="white-spinner"
-            >
-            </mat-progress-spinner>
-          </ng-container>
-        </button>
+      <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="isLoading">
+  <span *ngIf="!isLoading">Ingresar</span>
+  <span *ngIf="isLoading">
+    <!-- <mat-spinner diameter="20" color="accent"></mat-spinner> -->
+    Verificando...
+  </span>
+</button>
       </div>
 
       <!-- Enlace: ¡Regístrate Aquí! -->
