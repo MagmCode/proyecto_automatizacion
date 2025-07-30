@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http
 import { Router } from "@angular/router";
 import { catchError, tap } from "rxjs/operators";
 import { BehaviorSubject, Observable, throwError } from "rxjs";
+import { environment } from "src/environments/environment";
 
 @Injectable({
   providedIn: "root",
@@ -15,7 +16,7 @@ export class AuthService {
   public currentUser: Observable<any>;
 
   // URL de conexión - ajusta según tu entorno
-  private apiUrl = "http://localhost:8085/api/"; // Desarrollo local
+  private apiUrl = `${environment.apiUrl}`; // Desarrollo local
   // private apiUrl = "http://tu-servidor-produccion:8000/api/"; // Producción
 
   constructor(
