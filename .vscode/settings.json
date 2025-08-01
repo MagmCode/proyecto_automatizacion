@@ -1,4 +1,11 @@
 {
     "CodeGPT.apiKey": "CodeGPT Plus Beta",
-    "glassit.step": 1
+    "glassit.step": 1,
+    "terminal.integrated.suggest.enabled": true,
+    "terminal.integrated.altClickMovesCursor": true,
+    "terminal.integrated.cursorBlinking": true,
+    "terminal.integrated.cursorStyle": "block",
+    "terminal.integrated.cursorStyleInactive": "outline",
+    "terminal.integrated.cursorWidth": 1,
+    "terminal.integrated.defaultProfile.windows": null
 }
