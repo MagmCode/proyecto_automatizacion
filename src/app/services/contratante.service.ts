@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment'; // Assuming you have
   providedIn: 'root'
 })
 export class ContratanteService {
-  private apiUrl = `${environment.apiUrl}/contratantes/`; // Assuming /api/v1/contratantes/
+  private apiUrl = `${environment.apiUrl}contratantes/`; // Assuming /api/v1/contratantes/
 
   constructor(private http: HttpClient) { }
 

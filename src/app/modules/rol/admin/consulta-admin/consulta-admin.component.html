@@ -203,3 +203,124 @@
     <button mat-raised-button class="button button-1" (click)="dialogRef.close(data)">Guardar</button>
   </mat-dialog-actions>
 </ng-template>
+
+
+<!-- Diálogo de agregar -->
+<ng-template #agregarDialog let-data let-dialogRef="dialogRef">
+  <h2 mat-dialog-title class="dialog-title">Agregar Póliza</h2>
+  <mat-dialog-content>
+    <form #addForm="ngForm">
+      <div class="dialog-form-grid">
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Nro Póliza</mat-label>
+          <input matInput [(ngModel)]="data.nroPoliza" name="nroPoliza" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Aseguradora</mat-label>
+          <mat-select [(ngModel)]="data.aseguradoraId" name="aseguradoraId" required>
+            <mat-option *ngFor="let aseguradora of aseguradoras" [value]="aseguradora.id">
+              {{ aseguradora.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Ramo</mat-label>
+          <mat-select [(ngModel)]="data.ramoId" name="ramoId" required>
+            <mat-option *ngFor="let ramo of ramos" [value]="ramo.id">
+              {{ ramo.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Forma de pago</mat-label>
+          <mat-select [(ngModel)]="data.formaPagoId" name="formaPagoId" required>
+            <mat-option *ngFor="let formaPago of formasPago" [value]="formaPago.id">
+              {{ formaPago.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Contratante</mat-label>
+          <input matInput [(ngModel)]="data.contratanteData.nombre" name="contratanteNombre" required>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Asegurado</mat-label>
+          <input matInput [(ngModel)]="data.aseguradoData.nombre" name="aseguradoNombre" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Vigencia (Inicio)</mat-label>
+          <input matInput [matDatepicker]="vigenciaPickerInicio" [(ngModel)]="data.fecha_inicio" name="vigencia_inicio">
+          <mat-datepicker-toggle matSuffix [for]="vigenciaPickerInicio">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #vigenciaPickerInicio></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Vigencia (Fin)</mat-label>
+            <input matInput [matDatepicker]="vigenciaPickerFin" [(ngModel)]="data.fecha_fin" name="vigencia_fin">
+            <mat-datepicker-toggle matSuffix [for]="vigenciaPickerFin">
+                <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+            </mat-datepicker-toggle>
+            <mat-datepicker #vigenciaPickerFin></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>I trimestre</mat-label>
+          <input matInput [matDatepicker]="trimestre1Picker" [(ngModel)]="data.trimestre1" name="trimestre1">
+          <mat-datepicker-toggle matSuffix [for]="trimestre1Picker">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #trimestre1Picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>II trimestre</mat-label>
+          <input matInput [matDatepicker]="trimestre2Picker" [(ngModel)]="data.trimestre2" name="trimestre2">
+          <mat-datepicker-toggle matSuffix [for]="trimestre2Picker">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #trimestre2Picker></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>III trimestre</mat-label>
+          <input matInput [matDatepicker]="trimestre3Picker" [(ngModel)]="data.trimestre3" name="trimestre3">
+          <mat-datepicker-toggle matSuffix [for]="trimestre3Picker">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #trimestre3Picker></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>IV trimestre</mat-label>
+          <input matInput [matDatepicker]="trimestre4Picker" [(ngModel)]="data.trimestre4" name="trimestre4">
+          <mat-datepicker-toggle matSuffix [for]="trimestre4Picker">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #trimestre4Picker></mat-datepicker>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline" class="dialog-form-field">
+          <mat-label>Renovación</mat-label>
+          <input matInput [matDatepicker]="renovacionPicker" [(ngModel)]="data.renovacion" name="renovacion">
+          <mat-datepicker-toggle matSuffix [for]="renovacionPicker">
+            <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+          </mat-datepicker-toggle>
+          <mat-datepicker #renovacionPicker></mat-datepicker>
+        </mat-form-field>
+        
+      </div>
+    </form>
+  </mat-dialog-content>
+  <mat-dialog-actions class="dialog-actions" >
+    <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cancelar</button>
+    <button mat-raised-button class="button button-1" (click)="dialogRef.close(data)">Agregar</button>
+  </mat-dialog-actions>
+</ng-template>

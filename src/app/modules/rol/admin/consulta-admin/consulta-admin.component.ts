@@ -38,6 +38,7 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('editarDialog') editarDialog!: TemplateRef<any>;
+  @ViewChild('agregarDialog') agregarDialog!: TemplateRef<any>;
 
   // --- New Properties for Dialog Dropdowns ---
   // These will hold the lists of options for your select/dropdown fields
@@ -131,33 +132,52 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
     })
   }
 
-  private formatPolizaData(poliza: any): any {
-    return {
-      id: poliza.id,
-      aseguradora: poliza.aseguradora.nombre,
-      aseguradoraId: poliza.aseguradora.id, // <-- Added for edit dialog pre-selection
-      ramo: poliza.ramo.nombre,
-      ramoId: poliza.ramo.id,             // <-- Added for edit dialog pre-selection
-      formaPago: poliza.forma_pago, // forma_pago is directly the string name from StringRelatedField
-      formaPagoId: poliza.forma_pago_id, // <-- Added for edit dialog pre-selection (assuming backend sends this too, if not, adjust)
-      nroPoliza: poliza.numero,
-      contratante: poliza.contratante.nombre,
-      contratanteData: poliza.contratante, // <-- Keep the full nested object for editing
-      asegurado: poliza.asegurado.nombre,
-      aseguradoData: poliza.asegurado,     // <-- Keep the full nested object for editing
-      vigencia: `${formatDate(poliza.fecha_inicio, 'dd/MM/yyyy', 'en-US')} - ${formatDate(poliza.fecha_fin, 'dd/MM/yyyy', 'en-US')}`,
-      fecha_inicio: poliza.fecha_inicio, // <-- Added for correct date parsing in update/create
-      fecha_fin: poliza.fecha_fin,       // <-- Added for correct date parsing in update/create
-      trimestre1: poliza.i_trimestre, // Direct number now, not string with date
-      trimestre2: poliza.ii_trimestre,
-      trimestre3: poliza.iii_trimestre,
-      trimestre4: poliza.iv_trimestre,
-      renovacion: poliza.renovacion,
-      montoAsegurado: poliza.monto_asegurado, // <-- Added to map model fields
-      primaTotal: poliza.prima_total,         // <-- Added to map model fields
-      observaciones: poliza.observaciones,    // <-- Added to map model fields
-    };
-  }
+// En src/app/components/consulta-admin/consulta-admin.component.ts
+
+private formatPolizaData(poliza: any): any {
+  return {
+    id: poliza.id,
+    
+    // Accede al nombre desde el objeto anidado `aseguradora_nombre`
+    aseguradora: poliza.aseguradora_nombre.nombre,
+    // Accede al ID para poder preseleccionar el dropdown en la edición
+    aseguradoraId: poliza.aseguradora_nombre.id,
+
+    // Accede al nombre desde el objeto anidado `ramo_nombre`
+    ramo: poliza.ramo_nombre.nombre,
+    // Accede al ID para la edición
+    ramoId: poliza.ramo_nombre.id,
+
+    // `forma_pago_nombre` es una cadena (string) directamente
+    formaPago: poliza.forma_pago_nombre,
+    // Nota: El ID para `formaPago` deberá ser enviado por el backend
+    // a través de un campo como `forma_pago_id` en el serializador si lo necesitas.
+    // Por ahora, se asume que tu serializador de backend ya lo envía.
+    formaPagoId: poliza.forma_pago_id,
+
+    nroPoliza: poliza.numero,
+    
+    // Los campos `contratante` y `asegurado` son objetos anidados,
+    // por lo que el acceso a `.nombre` y el resto de los datos es directo.
+    contratante: poliza.contratante.nombre,
+    contratanteData: poliza.contratante,
+    asegurado: poliza.asegurado.nombre,
+    aseguradoData: poliza.asegurado,
+
+    // Formatea y mapea el resto de los campos de la póliza
+    vigencia: `${formatDate(poliza.fecha_inicio, 'dd/MM/yyyy', 'en-US')} - ${formatDate(poliza.fecha_fin, 'dd/MM/yyyy', 'en-US')}`,
+    fecha_inicio: poliza.fecha_inicio,
+    fecha_fin: poliza.fecha_fin,
+    trimestre1: poliza.i_trimestre,
+    trimestre2: poliza.ii_trimestre,
+    trimestre3: poliza.iii_trimestre,
+    trimestre4: poliza.iv_trimestre,
+    renovacion: poliza.renovacion,
+    montoAsegurado: poliza.monto_asegurado,
+    primaTotal: poliza.prima_total,
+    observaciones: poliza.observaciones,
+  };
+}
 
   // Changed to reflect direct number input for trimestres
   private formatTrimestre(fechaInicio: string, trimestre: number): string {
@@ -235,7 +255,7 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
     };
     // --- End Modified 'nuevo' object ---
 
-    const dialogRef = this.dialog.open(this.editarDialog, {
+    const dialogRef = this.dialog.open(this.agregarDialog, {
       width: '800px',
       data: { ...nuevo }
     });
@@ -338,18 +358,11 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
     }
   }
 
-  consultar() {
+ consultar() {
     this.tabIndex = 1;
-    const fechaConsulta = formatDate(this.today, 'yyyy-MM-dd', 'en-US');
+    // This `this.today` is the date from your date picker.
+    const fechaConsulta = formatDate(this.today, 'yyyy-MM-dd', 'en-US'); // e.g., "2025-08-01"
     this.isLoading = true;
-
-    // --- Clarification on `consultar()` ---
-    // This method correctly calls `getPolizasProximasVencer`.
-    // If you intend for the "Consulta" tab to be a general search/list for ALL policies
-    // (not just those nearing expiry), you would call `this.polizaService.getPolizas()` here,
-    // and potentially add more filtering parameters to that call.
-    // For now, it remains specific to "Pólizas Próximas a Vencer".
-    // --- End Clarification ---
 
     this.polizaService.getPolizasProximasVencer(fechaConsulta).subscribe({
       next: (polizas) => {
@@ -363,6 +376,7 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
       }
     });
   }
+
 
   salir(): void {
     this._router.navigate(['/analist/home-page']);

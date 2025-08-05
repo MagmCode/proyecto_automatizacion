@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment'; // Assuming you have
   providedIn: 'root'
 })
 export class FormaPagoService {
-  private apiUrl = `${environment.apiUrl}/formas-pago/`; // Assuming /api/v1/formas-pago/
+  private apiUrl = `${environment.apiUrl}formas-pago/`; // Assuming /api/v1/formas-pago/
 
   constructor(private http: HttpClient) { }
 

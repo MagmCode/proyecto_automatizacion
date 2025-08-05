@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment'; // Assuming you have
 export class RamoService {
   // Replace with your actual API base URL.
   // Using environment.apiUrl is a good practice for production deployments.
-  private apiUrl = `${environment.apiUrl}/ramos/`; // Assuming /api/v1/ramos/
+  private apiUrl = `${environment.apiUrl}ramos/`; // Assuming /api/v1/ramos/
 
   constructor(private http: HttpClient) { }
 
