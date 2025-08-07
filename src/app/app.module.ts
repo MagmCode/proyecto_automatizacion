@@ -1,7 +1,8 @@
+import { AuthExpiredInterceptor } from './services/auth-expired.interceptor';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
 
@@ -22,6 +23,13 @@ import { UnauthorizedComponent } from './modules/pages/unauthorized/unauthorized
     HttpClientModule,
     AppRoutingModule,
     SharedModule
+  ],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthExpiredInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

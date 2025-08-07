@@ -31,7 +31,7 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = [
     'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
-    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'renovacion', 'acciones'
+    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'renovacion', 'acciones'
   ];
 
   dataSource = new MatTableDataSource<any>([]); // Initialize as empty, data will be loaded
@@ -216,48 +216,43 @@ private formatPolizaData(poliza: any): any {
     });
   }
 
+
   agregarRegistro() {
-    // --- Modified 'nuevo' object for new record creation ---
-    // Now initializes with empty nested objects for Contratante/Asegurado
+    // Estructura compatible con el stepper y el template HTML
     const nuevo: any = {
-      id: null, // New records don't have an ID yet
-      nroPoliza: '',
-      aseguradoraId: null, // Will be selected from dropdown
-      ramoId: null,      // Will be selected from dropdown
-      formaPagoId: null, // Will be selected from dropdown
-      contratanteData: { // All required fields for Contratante must be here
-        nombre: '',
-        documento: '',
-        telefono: '',
-        email: '',
-        direccion: '',
-        // Add other required Contratante fields here if your model has them
-      },
-      aseguradoData: {   // All required fields for Asegurado must be here
-        nombre: '',
-        documento: '',
-        telefono: '',
-        email: '',
-        direccion: '',
-        // Add other required Asegurado fields here if your model has them
-      },
-      fecha_inicio: '', // Dates will be from date pickers
+      numero: '',
+      aseguradora_id: null,
+      ramo_id: null,
+      forma_pago_id: null,
+      fecha_inicio: '',
       fecha_fin: '',
-      vigencia: '', // String representation for display, actual dates sent separately
-      trimestre1: null, // Use null for numbers
-      trimestre2: null,
-      trimestre3: null,
-      trimestre4: null,
       renovacion: '',
-      montoAsegurado: null,
-      primaTotal: null,
-      observaciones: ''
+      prima_total: null,
+      monto_asegurado: null,
+      contratante: {
+        nombre: '',
+        documento: '',
+        telefono: '',
+        email: '',
+        direccion: ''
+      },
+      asegurado: {
+        nombre: '',
+        documento: '',
+        telefono: '',
+        email: '',
+        direccion: ''
+      }
     };
-    // --- End Modified 'nuevo' object ---
 
     const dialogRef = this.dialog.open(this.agregarDialog, {
       width: '800px',
-      data: { ...nuevo }
+      data: {
+        ...nuevo,
+        aseguradoras: this.aseguradoras,
+        ramos: this.ramos,
+        formasPago: this.formasPago
+      }
     });
     dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
@@ -266,83 +261,66 @@ private formatPolizaData(poliza: any): any {
     });
   }
 
-  createPoliza(polizaData: any) {
-    // --- Modified transformation for nested writable serializers ---
-    const polizaToCreate = {
-      numero: polizaData.nroPoliza,
-      // Send IDs for these relationships
-      aseguradora: polizaData.aseguradoraId, // Send ID, not nested object
-      ramo: polizaData.ramoId,               // Send ID
-      forma_pago: polizaData.formaPagoId,     // Send ID
-      // Send full nested objects for Contratante and Asegurado
-      contratante: polizaData.contratanteData, // Use the full data object
-      asegurado: polizaData.aseguradoData,     // Use the full data object
-      // Ensure dates are formatted correctly for backend (YYYY-MM-DD)
-      fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
-      fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
-      // Convert to numbers for DecimalField
-      i_trimestre: parseFloat(polizaData.trimestre1),
-      ii_trimestre: parseFloat(polizaData.trimestre2),
-      iii_trimestre: parseFloat(polizaData.trimestre3),
-      iv_trimestre: parseFloat(polizaData.trimestre4),
-      renovacion: polizaData.renovacion,
-      monto_asegurado: parseFloat(polizaData.montoAsegurado),
-      prima_total: parseFloat(polizaData.primaTotal),
-      observaciones: polizaData.observaciones
-    };
-    // --- End Modified transformation ---
+createPoliza(polizaData: any) {
+  const polizaToCreate = {
+    numero: polizaData.nroPoliza,
+    aseguradora_id: polizaData.aseguradoraId, // Usa el nombre correcto del campo del serializador
+    ramo_id: polizaData.ramoId,
+    forma_pago_id: polizaData.formaPagoId,
+    contratante: polizaData.contratanteData,
+    asegurado: polizaData.aseguradoData,
+    fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
+    fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
+    // --- CAMBIO CLAVE: Ya no enviamos los trimestres, solo la primaTotal ---
+    prima_total: parseFloat(polizaData.primaTotal),
+    // --- FIN DEL CAMBIO ---
+    renovacion: polizaData.renovacion,
+    monto_asegurado: parseFloat(polizaData.montoAsegurado),
+    observaciones: polizaData.observaciones
+  };
 
-    this.polizaService.createPoliza(polizaToCreate).subscribe({
-      next: (response) => {
-        this.snackBar.open('Póliza creada exitosamente', 'Cerrar', { duration: 3000 });
-        this.loadPolizas();
-      },
-      error: (error) => {
-        console.error('Error al crear póliza:', error);
-        this.snackBar.open(`Error al crear póliza: ${JSON.stringify(error.error)}`, 'Cerrar', { duration: 5000 }); // Show backend errors
-      }
-    });
-  }
+  this.polizaService.createPoliza(polizaToCreate).subscribe({
+    next: (response) => {
+      this.snackBar.open('Póliza creada exitosamente', 'Cerrar', { duration: 3000 });
+      this.loadPolizas();
+    },
+    error: (error) => {
+      console.error('Error al crear póliza:', error);
+      this.snackBar.open(`Error al crear póliza: ${JSON.stringify(error.error)}`, 'Cerrar', { duration: 5000 });
+    }
+  });
+}
 
-  updatePoliza(polizaData: any) {
-    // --- Modified transformation for nested writable serializers ---
-    const polizaToUpdate = {
-      id: polizaData.id,
-      numero: polizaData.nroPoliza,
-      // Send IDs for these relationships
-      aseguradora: polizaData.aseguradoraId,
-      ramo: polizaData.ramoId,
-      forma_pago: polizaData.formaPagoId,
-      // Send full nested objects for Contratante and Asegurado
-      contratante: polizaData.contratanteData,
-      asegurado: polizaData.aseguradoData,
-      // Ensure dates are formatted correctly for backend (YYYY-MM-DD)
-      fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
-      fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
-      // Convert to numbers for DecimalField
-      i_trimestre: parseFloat(polizaData.trimestre1),
-      ii_trimestre: parseFloat(polizaData.trimestre2),
-      iii_trimestre: parseFloat(polizaData.trimestre3),
-      iv_trimestre: parseFloat(polizaData.trimestre4),
-      renovacion: polizaData.renovacion,
-      monto_asegurado: parseFloat(polizaData.montoAsegurado),
-      prima_total: parseFloat(polizaData.primaTotal),
-      observaciones: polizaData.observaciones
-    };
-    // --- End Modified transformation ---
+updatePoliza(polizaData: any) {
+  const polizaToUpdate = {
+    id: polizaData.id,
+    numero: polizaData.nroPoliza,
+    aseguradora_id: polizaData.aseguradoraId, // Usa el nombre correcto del campo del serializador
+    ramo_id: polizaData.ramoId,
+    forma_pago_id: polizaData.formaPagoId,
+    contratante: polizaData.contratanteData,
+    asegurado: polizaData.aseguradoData,
+    fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
+    fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
+    // --- CAMBIO CLAVE: Ya no enviamos los trimestres, solo la primaTotal ---
+    prima_total: parseFloat(polizaData.primaTotal),
+    // --- FIN DEL CAMBIO ---
+    renovacion: polizaData.renovacion,
+    monto_asegurado: parseFloat(polizaData.montoAsegurado),
+    observaciones: polizaData.observaciones
+  };
 
-    this.polizaService.updatePoliza(polizaData.id, polizaToUpdate).subscribe({
-      next: (response) => {
-        this.snackBar.open('Póliza actualizada exitosamente', 'Cerrar', { duration: 3000 });
-        this.loadPolizas();
-      },
-      error: (error) => {
-        console.error('Error al actualizar póliza:', error);
-        this.snackBar.open(`Error al actualizar póliza: ${JSON.stringify(error.error)}`, 'Cerrar', { duration: 5000 }); // Show backend errors
-      }
-    });
-  }
-
+  this.polizaService.updatePoliza(polizaData.id, polizaToUpdate).subscribe({
+    next: (response) => {
+      this.snackBar.open('Póliza actualizada exitosamente', 'Cerrar', { duration: 3000 });
+      this.loadPolizas();
+    },
+    error: (error) => {
+      console.error('Error al actualizar póliza:', error);
+      this.snackBar.open(`Error al actualizar póliza: ${JSON.stringify(error.error)}`, 'Cerrar', { duration: 5000 });
+    }
+  });
+}
   eliminarElemento(element: any) {
     if (confirm('¿Seguro que desea eliminar esta póliza?')) {
       this.polizaService.deletePoliza(element.id).subscribe({

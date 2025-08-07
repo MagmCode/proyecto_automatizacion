@@ -19,6 +19,13 @@ export class AuthService {
   private apiUrl = `${environment.apiUrl}`; // Desarrollo local
   // private apiUrl = "http://tu-servidor-produccion:8000/api/"; // Producción
 
+  // Logout sin Observable, para usar desde el interceptor
+  logoutSync(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
+  }
   constructor(
     private http: HttpClient,
     private router: Router,

@@ -19,6 +19,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDateRangeInput, MatDateRangePicker, MatDatepickerToggle, MatDatepickerContent } from '@angular/material/datepicker';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -28,6 +29,8 @@ import { TelefonoLengthDirective } from 'src/app/directives/telefono-length.dire
 import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
+
+
 
 @NgModule({
   declarations: [
@@ -60,7 +63,8 @@ import { FormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule
   ],
   exports: [
     HeaderComponent,
@@ -89,7 +93,9 @@ import { FormsModule } from '@angular/forms';
     MatSnackBarModule,
     MatProgressSpinnerModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatStepperModule
+    
   ]
 })
 export class SharedModule { }
