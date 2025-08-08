@@ -17,8 +17,8 @@
             </mat-form-field>
           </div>
           <div class="consulta-actions">
-            <button mat-raised-button class="button button-1" type="button" (click)="consultar()">Buscar</button>
             <button mat-raised-button class="button button-2" type="button" (click)="salir()">Salir</button>
+            <button mat-raised-button class="button button-1" type="button" (click)="consultar()">Buscar</button>
           </div>
         </form>
       </mat-card>
@@ -220,7 +220,12 @@
 <!-- Diálogo de agregar -->
 <!-- Diálogo de agregar como un Stepper -->
 <ng-template #agregarDialog let-data let-dialogRef="dialogRef">
-  <h2 mat-dialog-title class="dialog-title">Agregar Póliza</h2>
+  <h2 mat-dialog-title class="dialog-title" style="display: flex; justify-content: space-between; align-items: center;">
+    Agregar Póliza
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Cerrar" style="margin-left: 8px;">
+      <mat-icon>close</mat-icon>
+    </button>
+  </h2>
 
   <!-- Contenedor del Stepper -->
   <mat-dialog-content>
@@ -302,7 +307,8 @@
           </div>
         </form>
         <div class="stepper-actions">
-          <button mat-raised-button color="primary" matStepperNext>Siguiente</button>
+          <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cancelar</button>
+          <button mat-raised-button class="button button-1" matStepperNext>Siguiente</button>
         </div>
       </mat-step>
 
@@ -333,8 +339,8 @@
           </div>
         </form>
         <div class="stepper-actions">
-          <button mat-raised-button matStepperPrevious>Atrás</button>
-          <button mat-raised-button color="primary" matStepperNext>Siguiente</button>
+          <button mat-raised-button class="button button-2" matStepperPrevious>Atrás</button>
+          <button mat-raised-button class="button button-1" matStepperNext>Siguiente</button>
         </div>
       </mat-step>
 
@@ -365,14 +371,10 @@
           </div>
         </form>
         <div class="stepper-actions">
-          <button mat-raised-button matStepperPrevious>Atrás</button>
+          <button mat-raised-button class="button button-2" matStepperPrevious>Atrás</button>
           <button mat-raised-button class="button button-1" (click)="dialogRef.close(data)">Agregar</button>
         </div>
       </mat-step>
     </mat-stepper>
   </mat-dialog-content>
-
-  <mat-dialog-actions class="dialog-actions">
-    <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cancelar</button>
-  </mat-dialog-actions>
 </ng-template>

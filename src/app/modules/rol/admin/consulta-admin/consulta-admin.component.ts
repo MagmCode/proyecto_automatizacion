@@ -261,22 +261,33 @@ private formatPolizaData(poliza: any): any {
     });
   }
 
+
 createPoliza(polizaData: any) {
+  // Construir el objeto exactamente como lo espera el backend
   const polizaToCreate = {
-    numero: polizaData.nroPoliza,
-    aseguradora_id: polizaData.aseguradoraId, // Usa el nombre correcto del campo del serializador
-    ramo_id: polizaData.ramoId,
-    forma_pago_id: polizaData.formaPagoId,
-    contratante: polizaData.contratanteData,
-    asegurado: polizaData.aseguradoData,
+    numero: polizaData.numero,
     fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
     fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
-    // --- CAMBIO CLAVE: Ya no enviamos los trimestres, solo la primaTotal ---
-    prima_total: parseFloat(polizaData.primaTotal),
-    // --- FIN DEL CAMBIO ---
-    renovacion: polizaData.renovacion,
-    monto_asegurado: parseFloat(polizaData.montoAsegurado),
-    observaciones: polizaData.observaciones
+    renovacion: polizaData.renovacion ? formatDate(new Date(polizaData.renovacion), 'yyyy-MM-dd', 'en-US') : '',
+    prima_total: parseFloat(polizaData.prima_total),
+    aseguradora_id: polizaData.aseguradora_id,
+    ramo_id: polizaData.ramo_id,
+    forma_pago_id: polizaData.forma_pago_id,
+    monto_asegurado: parseFloat(polizaData.monto_asegurado),
+    contratante: {
+      nombre: polizaData.contratante?.nombre,
+      documento: polizaData.contratante?.documento,
+      telefono: polizaData.contratante?.telefono,
+      email: polizaData.contratante?.email,
+      direccion: polizaData.contratante?.direccion
+    },
+    asegurado: {
+      nombre: polizaData.asegurado?.nombre,
+      documento: polizaData.asegurado?.documento,
+      telefono: polizaData.asegurado?.telefono,
+      email: polizaData.asegurado?.email,
+      direccion: polizaData.asegurado?.direccion
+    }
   };
 
   this.polizaService.createPoliza(polizaToCreate).subscribe({
@@ -305,7 +316,7 @@ updatePoliza(polizaData: any) {
     // --- CAMBIO CLAVE: Ya no enviamos los trimestres, solo la primaTotal ---
     prima_total: parseFloat(polizaData.primaTotal),
     // --- FIN DEL CAMBIO ---
-    renovacion: polizaData.renovacion,
+    renovacion: polizaData.renovacion ? formatDate(new Date(polizaData.renovacion), 'yyyy-MM-dd', 'en-US') : '',
     monto_asegurado: parseFloat(polizaData.montoAsegurado),
     observaciones: polizaData.observaciones
   };
