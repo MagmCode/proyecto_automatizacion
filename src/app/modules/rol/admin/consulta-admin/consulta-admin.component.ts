@@ -1,3 +1,4 @@
+
 import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -24,14 +25,14 @@ import { FormaPagoService } from 'src/app/services/forma-pago.service';
   styleUrls: ['./consulta-admin.component.scss']
 })
 export class ConsultaAdminComponent implements OnInit, AfterViewInit {
-
   today: Date = new Date();
+  selectedDate: Date = new Date();
   tabIndex = 0;
   isLoading = false;
 
   displayedColumns: string[] = [
-    'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
-    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'renovacion', 'acciones'
+    'nro','aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
+    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'montoAsegurado', 'renovacion', 'acciones'
   ];
 
   dataSource = new MatTableDataSource<any>([]); // Initialize as empty, data will be loaded
@@ -39,6 +40,18 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('editarDialog') editarDialog!: TemplateRef<any>;
   @ViewChild('agregarDialog') agregarDialog!: TemplateRef<any>;
+  @ViewChild('verDialog') verDialog!: TemplateRef<any>;
+  verElemento(element: any) {
+    const dialogData = {
+      ...element,
+      contratanteData: element.contratanteData || element.contratante,
+      aseguradoData: element.aseguradoData || element.asegurado
+    };
+    this.dialog.open(this.verDialog, {
+      width: '800px',
+      data: dialogData
+    });
+  }
 
   // --- New Properties for Dialog Dropdowns ---
   // These will hold the lists of options for your select/dropdown fields
@@ -121,7 +134,10 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
     this.isLoading = true;
     this.polizaService.getPolizas().subscribe({
       next: (polizas) => {
-        this.dataSource.data = polizas.map(p => this.formatPolizaData(p));
+        const formatted = polizas.map(p => this.formatPolizaData(p));
+        // Ordenar por id ascendente
+        formatted.sort((a, b) => a.id - b.id);
+        this.dataSource.data = formatted;
         this.isLoading = false;
       },
       error: (error) => {
@@ -198,15 +214,39 @@ private formatPolizaData(poliza: any): any {
   }
 
   editarElemento(element: any) {
-    // Open the dialog with a copy of the element, including full nested data
+    // Busca el id de la forma de pago por nombre si no viene en el objeto
+    const formaPagoId = element.formaPagoId
+      ?? element.forma_pago_id
+      ?? this.formasPago.find(fp => fp.nombre === element.formaPago)?.id
+      ?? null;
+
+    // Convertir fechas string a objetos Date locales para evitar desfase por zona horaria
+    const parseDate = (val: any) => {
+      if (!val) return null;
+      if (val instanceof Date) return val;
+      // Si es string tipo 'YYYY-MM-DD', parsear manualmente a Date local
+      if (typeof val === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(val)) {
+        const [year, month, day] = val.split('-').map(Number);
+        return new Date(year, month - 1, day);
+      }
+      // Si es string tipo 'YYYY-MM-DDTHH:mm:ss', usar Date normal
+      const d = new Date(val);
+      return isNaN(d.getTime()) ? null : d;
+    };
+
+    const dialogData = {
+      ...element,
+      fecha_inicio: parseDate(element.fecha_inicio),
+      fecha_fin: parseDate(element.fecha_fin),
+      renovacion: parseDate(element.renovacion),
+      contratanteData: { ...element.contratanteData },
+      aseguradoData: { ...element.aseguradoData },
+      formaPagoId
+    };
+    console.log('Datos enviados al diálogo de editar:', dialogData);
     const dialogRef = this.dialog.open(this.editarDialog, {
       width: '800px',
-      data: {
-        ...element,
-        // Ensure nested objects are copied for modification without altering original
-        contratanteData: { ...element.contratanteData },
-        aseguradoData: { ...element.aseguradoData }
-      }
+      data: dialogData
     });
 
     dialogRef.afterClosed().subscribe((result: any) => {
@@ -215,7 +255,6 @@ private formatPolizaData(poliza: any): any {
       }
     });
   }
-
 
   agregarRegistro() {
     // Estructura compatible con el stepper y el template HTML
@@ -303,14 +342,19 @@ createPoliza(polizaData: any) {
 }
 
 updatePoliza(polizaData: any) {
+  const getPersonaObj = (main: any, backup: any) => {
+    if (main && typeof main === 'object') return main;
+    if (backup && typeof backup === 'object') return backup;
+    return {};
+  };
   const polizaToUpdate = {
     id: polizaData.id,
     numero: polizaData.nroPoliza,
     aseguradora_id: polizaData.aseguradoraId, // Usa el nombre correcto del campo del serializador
     ramo_id: polizaData.ramoId,
     forma_pago_id: polizaData.formaPagoId,
-    contratante: polizaData.contratanteData,
-    asegurado: polizaData.aseguradoData,
+    contratante: getPersonaObj(polizaData.contratante, polizaData.contratanteData),
+    asegurado: getPersonaObj(polizaData.asegurado, polizaData.aseguradoData),
     fecha_inicio: formatDate(new Date(polizaData.fecha_inicio), 'yyyy-MM-dd', 'en-US'),
     fecha_fin: formatDate(new Date(polizaData.fecha_fin), 'yyyy-MM-dd', 'en-US'),
     // --- CAMBIO CLAVE: Ya no enviamos los trimestres, solo la primaTotal ---
@@ -350,12 +394,14 @@ updatePoliza(polizaData: any) {
  consultar() {
     this.tabIndex = 1;
     // This `this.today` is the date from your date picker.
-    const fechaConsulta = formatDate(this.today, 'yyyy-MM-dd', 'en-US'); // e.g., "2025-08-01"
+    const fechaConsulta = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US'); // e.g., "2025-08-01"
     this.isLoading = true;
 
     this.polizaService.getPolizasProximasVencer(fechaConsulta).subscribe({
       next: (polizas) => {
-        this.dataSource.data = polizas.map(p => this.formatPolizaData(p));
+        const formatted = polizas.map(p => this.formatPolizaData(p));
+        formatted.sort((a, b) => a.id - b.id);
+        this.dataSource.data = formatted;
         this.isLoading = false;
       },
       error: (error) => {

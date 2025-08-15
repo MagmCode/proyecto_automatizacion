@@ -19,8 +19,8 @@
   <div class="user-info" (mouseenter)="showMenu()" (mouseleave)="hideMenu()">
     <mat-icon class="user-icon">person</mat-icon>
     <span class="user-text">
-      <!-- {{ isAdmin ? 'Admin' : name  }} -->
-        nombre
+      {{ name  }}
+        <!-- nombre -->
       <mat-icon class="arrow-icon">arrow_drop_down</mat-icon>
     </span>
     <div class="user-menu" *ngIf="menuOpen" (mouseenter)="showMenu()" (mouseleave)="hideMenu()">

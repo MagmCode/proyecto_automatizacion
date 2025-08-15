@@ -93,13 +93,18 @@ export class SignInComponent implements OnInit {
   // Manejo de errores de login
   private handleLoginError(error: any): void {
     let errorMessage = "Error en el inicio de sesión";
-    
-    if (error.includes("Credenciales incorrectas")) {
+    // Acepta tanto el mensaje personalizado como el mensaje genérico del AuthService
+    if (
+      (typeof error === 'string' && (
+        error.includes("Credenciales incorrectas") ||
+        error.includes("Error en la autenticación")
+      )) ||
+      (error && error.error && error.error.detail === 'No active account found with the given credentials')
+    ) {
       errorMessage = "Cédula o contraseña incorrectos";
-    } else if (error.includes("Sesión expirada")) {
+    } else if (typeof error === 'string' && error.includes("Sesión expirada")) {
       errorMessage = "Sesión expirada, por favor ingrese nuevamente";
     }
-
     this.showSnackBar(errorMessage);
   }
 

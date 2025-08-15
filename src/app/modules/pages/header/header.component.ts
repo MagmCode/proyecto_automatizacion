@@ -23,7 +23,11 @@ export class HeaderComponent implements OnInit {
     const role = this.authService.getUserRole();
     this.isAdmin = role === 'admin';
     this.isAnalist = role === 'analista';
-    // this.name = this.authService.getName();
+    this.authService.getUserProfile().subscribe ({
+      next: (profile) => {
+        this.name = profile.first_name;
+      }
+    })
   }
 
   // Métodos de navegación para usuarios (cliente)

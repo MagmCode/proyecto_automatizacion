@@ -9,7 +9,7 @@
               <label class="fecha-label">Fecha</label>
             </div>
             <mat-form-field appearance="outline" class="fecha-campo">
-              <input matInput [max]="today" [matDatepicker]="picker" [value]="today" [readonly]="true">
+              <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" name="selectedDate" required>
               <button mat-icon-button matSuffix type="button" (click)="picker.open()">
                 <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
               </button>
@@ -52,74 +52,89 @@
           <div class="table-container">
             <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
+              <ng-container matColumnDef="nro">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>#</th>
+                <td mat-cell *matCellDef="let element; let i = index">{{ i + 1 }}</td>
+              </ng-container>
               <ng-container matColumnDef="aseguradora">
-                <th mat-header-cell *matHeaderCellDef>Aseguradora</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Aseguradora</th>
                 <td mat-cell *matCellDef="let element">{{ element.aseguradora }}</td>
               </ng-container>
               <ng-container matColumnDef="ramo">
-                <th mat-header-cell *matHeaderCellDef>Ramo</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Ramo</th>
                 <td mat-cell *matCellDef="let element">{{ element.ramo }}</td>
               </ng-container>
               <ng-container matColumnDef="formaPago">
-                <th mat-header-cell *matHeaderCellDef>Forma de pago</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Forma de pago</th>
                 <td mat-cell *matCellDef="let element">{{ element.formaPago }}</td>
               </ng-container>
               <ng-container matColumnDef="nroPoliza">
-                <th mat-header-cell *matHeaderCellDef>Nro Póliza</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Nro Póliza</th>
                 <td mat-cell *matCellDef="let element">{{ element.nroPoliza }}</td>
               </ng-container>
               <ng-container matColumnDef="contratante">
-                <th mat-header-cell *matHeaderCellDef>Contratante</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Contratante</th>
                 <td mat-cell *matCellDef="let element">{{ element.contratante }}</td>
               </ng-container>
               <ng-container matColumnDef="asegurado">
-                <th mat-header-cell *matHeaderCellDef>Asegurado</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Asegurado</th>
                 <td mat-cell *matCellDef="let element">{{ element.asegurado }}</td>
               </ng-container>
               <ng-container matColumnDef="vigencia">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">Vigencia</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>Vigencia</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
                   <span *ngFor="let f of element.vigencia.split(' - ')">{{f}}<br></span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="trimestre1">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">I trimestre</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>I trimestre</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
                   <span *ngFor="let f of element.trimestre1.split(' - ')">{{f}}<br></span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="trimestre2">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">II trimestre</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>II trimestre</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
                   <span *ngFor="let f of element.trimestre2.split(' - ')">{{f}}<br></span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="trimestre3">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">III trimestre</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>III trimestre</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
                   <span *ngFor="let f of element.trimestre3.split(' - ')">{{f}}<br></span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="trimestre4">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">IV trimestre</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>IV trimestre</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
                   <span *ngFor="let f of element.trimestre4.split(' - ')">{{f}}<br></span>
                 </td>
               </ng-container>
               <ng-container matColumnDef="primaTotal">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">Prima Total</th>
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>Prima Total</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.primaTotal.split(' - ')">{{f}}<br></span>
+                  {{element.primaTotal | number: '1.2-2'}}
                 </td>
               </ng-container>
+
+              <ng-container matColumnDef="montoAsegurado">
+                <th mat-header-cell *matHeaderCellDef class="fecha-col" mat-sort-header>Monto Asegurado</th>
+                <td mat-cell *matCellDef="let element" class="fecha-col">
+                  {{element.montoAsegurado | number: '1.2-2'}}
+                </td>
+              </ng-container>
+
               <ng-container matColumnDef="renovacion">
-                <th mat-header-cell *matHeaderCellDef>Renovación</th>
+                <th mat-header-cell *matHeaderCellDef mat-sort-header>Renovación</th>
                 <td mat-cell *matCellDef="let element">{{ element.renovacion }}</td>
               </ng-container>
 
               <ng-container matColumnDef="acciones">
                 <th mat-header-cell *matHeaderCellDef>Acciones</th>
                 <td mat-cell *matCellDef="let element">
+                  <button mat-icon-button color="accent" (click)="verElemento(element)">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
                   <button mat-icon-button color="primary" (click)="editarElemento(element)">
                     <mat-icon>edit</mat-icon>
                   </button>
@@ -128,9 +143,82 @@
                   </button>
                 </td>
               </ng-container>
+<!-- Diálogo de solo lectura para ver datos de contratante y asegurado -->
+<ng-template #verDialog let-data let-dialogRef="dialogRef">
+  <h2 mat-dialog-title class="dialog-title" style="display: flex; justify-content: space-between; align-items: center;">
+    Ver Detalles
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Cerrar" style="margin-left: 8px;">
+      <mat-icon>close</mat-icon>
+    </button>
+  </h2>
+  <mat-dialog-content>
+    <mat-stepper [linear]="false" selectedIndex="0">
+      <!-- Paso 1: Contratante -->
+      <mat-step [label]="'Contratante'">
+        <div class="dialog-form-grid">
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Nombre</mat-label>
+            <input matInput [value]="data.contratanteData?.nombre || data.contratante?.nombre" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Documento</mat-label>
+            <input matInput [value]="data.contratanteData?.documento || data.contratante?.documento" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Teléfono</mat-label>
+            <input matInput [value]="data.contratanteData?.telefono || data.contratante?.telefono" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Email</mat-label>
+            <input matInput [value]="data.contratanteData?.email || data.contratante?.email" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Dirección</mat-label>
+            <input matInput [value]="data.contratanteData?.direccion || data.contratante?.direccion" readonly>
+          </mat-form-field>
+        </div>
+        <div class="stepper-actions">
+          <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cerrar</button>
+          <button mat-raised-button class="button button-1" matStepperNext>Siguiente</button>
+        </div>
+      </mat-step>
+      <!-- Paso 2: Asegurado -->
+      <mat-step [label]="'Asegurado'">
+        <div class="dialog-form-grid">
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Nombre</mat-label>
+            <input matInput [value]="data.aseguradoData?.nombre || data.asegurado?.nombre" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Documento</mat-label>
+            <input matInput [value]="data.aseguradoData?.documento || data.asegurado?.documento" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Teléfono</mat-label>
+            <input matInput [value]="data.aseguradoData?.telefono || data.asegurado?.telefono" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Email</mat-label>
+            <input matInput [value]="data.aseguradoData?.email || data.asegurado?.email" readonly>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="dialog-form-field">
+            <mat-label>Dirección</mat-label>
+            <input matInput [value]="data.aseguradoData?.direccion || data.asegurado?.direccion" readonly>
+          </mat-form-field>
+        </div>
+        <div class="stepper-actions">
+          <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cerrar</button>
+          <button mat-raised-button class="button button-1" matStepperPrevious>Atrás</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
+  </mat-dialog-content>
+</ng-template>
+
 
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              
             </table>
           </div>
           <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
@@ -143,77 +231,152 @@
 
 
 
-<!-- Diálogo de edición -->
+<!-- Diálogo de edición (igual al de agregar, pero con datos precargados) -->
 <ng-template #editarDialog let-data let-dialogRef="dialogRef">
-  <h2 mat-dialog-title class="dialog-title">Editar Registro</h2>
+  <h2 mat-dialog-title class="dialog-title" style="display: flex; justify-content: space-between; align-items: center;">
+    Editar Póliza
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Cerrar" style="margin-left: 8px;">
+      <mat-icon>close</mat-icon>
+    </button>
+  </h2>
   <mat-dialog-content>
-    <form #editForm="ngForm">
-      <div class="dialog-form-grid">
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Nro Póliza</mat-label>
-          <input matInput [(ngModel)]="data.nroPoliza" name="nroPoliza" readonly>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Aseguradora</mat-label>
-          <input matInput [(ngModel)]="data.aseguradora" name="aseguradora">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Ramo</mat-label>
-          <input matInput [(ngModel)]="data.ramo" name="ramo">
-        </mat-form-field>
-        
-
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Forma de pago</mat-label>
-          <input matInput [(ngModel)]="data.formaPago" name="formaPago">
-        </mat-form-field>        
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Contratante</mat-label>
-          <input matInput [(ngModel)]="data.contratante" name="contratante">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Asegurado</mat-label>
-          <input matInput [(ngModel)]="data.asegurado" name="asegurado">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Vigencia</mat-label>
-          <input matInput [(ngModel)]="data.vigencia" name="vigencia">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Prima Total</mat-label>
-          <input matInput type="number" [(ngModel)]="data.primaTotal" name="primaTotal" required>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>I trimestre</mat-label>
-          <input matInput [(ngModel)]="data.trimestre1" name="trimestre1">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>II trimestre</mat-label>
-          <input matInput [(ngModel)]="data.trimestre2" name="trimestre2">
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>III trimestre</mat-label>
-          <input matInput [(ngModel)]="data.trimestre3" name="trimestre3">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>IV trimestre</mat-label>
-          <input matInput [(ngModel)]="data.trimestre4" name="trimestre4">
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="dialog-form-field">
-          <mat-label>Renovación</mat-label>
-          <input matInput [(ngModel)]="data.renovacion" name="renovacion">
-        </mat-form-field>
-      </div>
-    </form>
+    <mat-stepper #stepper [linear]="true">
+      <!-- PASO 1: Datos de la Póliza -->
+      <mat-step [label]="'Datos de la Póliza'">
+        <form #polizaFormEdit="ngForm">
+          <div class="dialog-form-grid">
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Nro Póliza</mat-label>
+              <input matInput [(ngModel)]="data.nroPoliza" name="nropoliza" required readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Aseguradora</mat-label>
+              <mat-select [(ngModel)]="data.aseguradoraId" name="aseguradora" required>
+                <mat-option *ngFor="let aseguradora of aseguradoras" [value]="aseguradora.id">
+                  {{ aseguradora.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Ramo</mat-label>
+              <mat-select [(ngModel)]="data.ramoId" name="ramo_id" required>
+                <mat-option *ngFor="let ramo of ramos" [value]="ramo.id">
+                  {{ ramo.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Forma de pago</mat-label>
+              <mat-select [(ngModel)]="data.formaPagoId" name="forma_pago_id" required>
+                <mat-option *ngFor="let formaPago of formasPago" [value]="formaPago.id">
+                  {{ formaPago.nombre }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Vigencia (Inicio)</mat-label>
+              <input matInput [matDatepicker]="vigenciaPickerInicioEdit" [(ngModel)]="data.fecha_inicio" name="vigencia_inicio" required>
+              <mat-datepicker-toggle matSuffix [for]="vigenciaPickerInicioEdit">
+                <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+              </mat-datepicker-toggle>
+              <mat-datepicker #vigenciaPickerInicioEdit></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Vigencia (Fin)</mat-label>
+              <input matInput [matDatepicker]="vigenciaPickerFinEdit" [(ngModel)]="data.fecha_fin" name="vigencia_fin" required>
+              <mat-datepicker-toggle matSuffix [for]="vigenciaPickerFinEdit">
+                <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+              </mat-datepicker-toggle>
+              <mat-datepicker #vigenciaPickerFinEdit></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Renovación</mat-label>
+              <input matInput [matDatepicker]="renovacionPickerEdit" [(ngModel)]="data.renovacion" name="renovacion" required>
+              <mat-datepicker-toggle matSuffix [for]="renovacionPickerEdit">
+                <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" matDatepickerToggleIcon />
+              </mat-datepicker-toggle>
+              <mat-datepicker #renovacionPickerEdit></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Prima Total</mat-label>
+              <input matInput type="number" [(ngModel)]="data.primaTotal" name="prima_total" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Monto Asegurado</mat-label>
+              <input matInput type="number" [(ngModel)]="data.montoAsegurado" name="monto_asegurado" required>
+            </mat-form-field>
+            <!-- Los campos de los trimestres se han eliminado, ahora el backend los calcula -->
+          </div>
+        </form>
+        <div class="stepper-actions">
+          <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cancelar</button>
+          <button mat-raised-button class="button button-1" matStepperNext>Siguiente</button>
+        </div>
+      </mat-step>
+      <!-- PASO 2: Datos del Contratante -->
+      <mat-step [label]="'Datos del Contratante'">
+        <form #contratanteFormEdit="ngForm">
+          <div class="dialog-form-grid">
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Nombre</mat-label>
+              <input matInput [(ngModel)]="data.contratanteData.nombre" name="contratanteNombre" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Documento</mat-label>
+              <input matInput [(ngModel)]="data.contratanteData.documento" name="contratanteDocumento" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Teléfono</mat-label>
+              <input matInput [(ngModel)]="data.contratanteData.telefono" name="contratanteTelefono" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" [(ngModel)]="data.contratanteData.email" name="contratanteEmail" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Dirección</mat-label>
+              <input matInput [(ngModel)]="data.contratanteData.direccion" name="contratanteDireccion" required>
+            </mat-form-field>
+          </div>
+        </form>
+        <div class="stepper-actions">
+          <button mat-raised-button class="button button-2" matStepperPrevious>Atrás</button>
+          <button mat-raised-button class="button button-1" matStepperNext>Siguiente</button>
+        </div>
+      </mat-step>
+      <!-- PASO 3: Datos del Asegurado -->
+      <mat-step [label]="'Datos del Asegurado'">
+        <form #aseguradoFormEdit="ngForm">
+          <div class="dialog-form-grid">
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Nombre</mat-label>
+              <input matInput [(ngModel)]="data.aseguradoData.nombre" name="aseguradoNombre" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Documento</mat-label>
+              <input matInput [(ngModel)]="data.aseguradoData.documento" name="aseguradoDocumento" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Teléfono</mat-label>
+              <input matInput [(ngModel)]="data.aseguradoData.telefono" name="aseguradoTelefono" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" [(ngModel)]="data.aseguradoData.email" name="aseguradoEmail" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="dialog-form-field">
+              <mat-label>Dirección</mat-label>
+              <input matInput [(ngModel)]="data.aseguradoData.direccion" name="aseguradoDireccion" required>
+            </mat-form-field>
+          </div>
+        </form>
+        <div class="stepper-actions">
+          <button mat-raised-button class="button button-2" matStepperPrevious>Atrás</button>
+          <button mat-raised-button class="button button-1" (click)="dialogRef.close(data)">Guardar</button>
+        </div>
+      </mat-step>
+    </mat-stepper>
   </mat-dialog-content>
-  <mat-dialog-actions class="dialog-actions" >
-    <button mat-raised-button class="button button-2" (click)="dialogRef.close()">Cancelar</button>
-    <button mat-raised-button class="button button-1" (click)="dialogRef.close(data)">Guardar</button>
-  </mat-dialog-actions>
 </ng-template>
 
 
