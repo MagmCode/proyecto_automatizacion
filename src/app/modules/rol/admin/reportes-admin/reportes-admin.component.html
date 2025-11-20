@@ -10,7 +10,7 @@
                 <label class="label">Fecha Desde</label>
               </div>
               <mat-form-field appearance="outline" class="fecha-campo">
-                <input matInput [matDatepicker]="pickerDesde" name="fechaDesde">
+                <input matInput [matDatepicker]="pickerDesde" name="fechaDesde" [(ngModel)]="fechaDesde" [max]="maxDate" [ngModelOptions]="{standalone: true}">
                 <button mat-icon-button matSuffix type="button" (click)="pickerDesde.open()">
                   <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
                 </button>
@@ -22,7 +22,7 @@
                 <label class="label">Fecha Hasta</label>
               </div>
               <mat-form-field appearance="outline" class="fecha-campo">
-                <input matInput [matDatepicker]="pickerHasta" name="fechaHasta">
+                <input matInput [matDatepicker]="pickerHasta" name="fechaHasta" [(ngModel)]="fechaHasta" [max]="maxDate" [ngModelOptions]="{standalone: true}">
                 <button mat-icon-button matSuffix type="button" (click)="pickerHasta.open()">
                   <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
                 </button>
@@ -34,7 +34,8 @@
                 <label class="label">Aseguradora</label>
               </div>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-select name="aseguradora" >
+                <mat-select name="aseguradora" [(ngModel)]="selectedAseguradora" [ngModelOptions]="{standalone: true}">
+                  <mat-option value="" disabled>Seleccione</mat-option>
                   <mat-option *ngFor="let item of aseguradoras" [value]="item">{{ item }}</mat-option>
                 </mat-select>
               </mat-form-field>
@@ -44,7 +45,8 @@
                 <label class="label">Contratante</label>
               </div>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-select name="contratante">
+                <mat-select name="contratante" [(ngModel)]="selectedContratante" [ngModelOptions]="{standalone: true}">
+                  <mat-option value="" disabled>Seleccione</mat-option>
                   <mat-option *ngFor="let item of contratantes" [value]="item">{{ item }}</mat-option>
                 </mat-select>
               </mat-form-field>
@@ -54,7 +56,8 @@
                 <label class="label">Asegurado</label>
               </div>
               <mat-form-field appearance="outline" class="full-width">
-                <mat-select name="asegurado">
+                <mat-select name="asegurado" [(ngModel)]="selectedAsegurado" [ngModelOptions]="{standalone: true}">
+                  <mat-option value="" disabled>Seleccione</mat-option>
                   <mat-option *ngFor="let item of asegurados" [value]="item">{{ item }}</mat-option>
                 </mat-select>
               </mat-form-field>

@@ -31,8 +31,8 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
   isLoading = false;
 
   displayedColumns: string[] = [
-    'nro','aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
-    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'montoAsegurado', 'renovacion', 'acciones'
+    'acciones', 'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
+    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'montoAsegurado', 'renovacion'
   ];
 
   dataSource = new MatTableDataSource<any>([]); // Initialize as empty, data will be loaded

@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment'; // Assuming you have
   providedIn: 'root'
 })
 export class AseguradoService {
-  private apiUrl = `${environment.apiUrl}/asegurados/`; // Assuming /api/v1/asegurados/
+  private apiUrl = `${environment.apiUrl}asegurados/`; // Assuming /api/v1/asegurados/
 
   constructor(private http: HttpClient) { }
 

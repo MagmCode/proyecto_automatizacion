@@ -1,7 +1,10 @@
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { AseguradoraService, Aseguradora } from 'src/app/services/aseguradora.service';
+import { ContratanteService } from 'src/app/services/contratante.service';
+import { AseguradoService } from 'src/app/services/asegurado.service';
 
 @Component({
   selector: 'app-reportes-admin',
@@ -10,9 +13,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ReportesAdminComponent implements OnInit {
 
-  aseguradoras: string[] = ['Seguros Caracas', 'Mapfre', 'Mercantil', 'Zurich'];
-  contratantes: string[] = ['Empresa A', 'Empresa B', 'Empresa C'];
-  asegurados: string[] = ['Juan Pérez', 'María Gómez', 'Carlos Ruiz'];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  // We'll store simple name arrays so the template doesn't need to change
+  aseguradoras: string[] = [];
+  contratantes: string[] = [];
+  asegurados: string[] = [];
+  // Selected values for the selects. Initialize to empty string so the
+  // template can show a default "Seleccione" option until the user picks one.
+  selectedAseguradora: string = '';
+  selectedContratante: string = '';
+  selectedAsegurado: string = '';
 
   displayedColumns: string[] = [
     'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
@@ -29,9 +40,52 @@ export class ReportesAdminComponent implements OnInit {
     // ...puedes agregar más datos de ejemplo si lo deseas
   ]);
 
-  constructor() { }
+  // Date controls for the search form. Preselect today for both fields and
+  // expose a maxDate so the "Fecha Hasta" picker cannot select future dates.
+  fechaDesde: Date = new Date();
+  fechaHasta: Date = new Date();
+  maxDate: Date = new Date();
+
+
+
+  constructor(
+    private aseguradoraService: AseguradoraService,
+    private contratanteService: ContratanteService,
+    private aseguradoService: AseguradoService
+  ) { }
 
   ngOnInit(): void {
+    // Fetch aseguradoras
+    this.aseguradoraService.getAseguradoras().subscribe({
+      next: (res) => {
+        // map to name strings; if the API returns objects with `nombre` use that, otherwise fall back
+        this.aseguradoras = res.map((a: any) => a.nombre ?? a.name ?? String(a));
+      },
+      error: (err) => console.error('Error cargando aseguradoras:', err)
+    });
+
+    // Fetch contratantes
+    this.contratanteService.getContratantes().subscribe({
+      next: (res) => {
+        this.contratantes = res.map((c: any) => c.nombre ?? c.razon_social ?? c.name ?? String(c));
+      },
+      error: (err) => console.error('Error cargando contratantes:', err)
+    });
+
+    // Fetch asegurados
+    this.aseguradoService.getAsegurados().subscribe({
+      next: (res) => {
+        this.asegurados = res.map((s: any) => s.nombre ?? `${s.primer_nombre ?? ''} ${s.apellido ?? ''}`.trim() ?? s.name ?? String(s));
+      },
+      error: (err) => console.error('Error cargando asegurados:', err)
+    });
+  }
+
+  ngAfterViewInit(): void {
+    // Wire up paginator for the table
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
 }
