@@ -8,9 +8,22 @@ import { Router } from "@angular/router";
   styleUrls: ['./homepage-analist.component.scss']
 })
 export class HomepageAnalistComponent implements OnInit {
+  Nombre: string = '';
   constructor(private authService: AuthService, private router: Router) {}
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Subscribe to currentUser to display the logged-in user's name
+    this.authService.currentUser.subscribe(user => {
+      if (user && (user.firstName || user.lastName)) {
+        this.Nombre = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+      } else {
+        // Fallback to localStorage values if BehaviorSubject is empty
+        const first = localStorage.getItem('first_name') || '';
+        const last = localStorage.getItem('last_name') || '';
+        const username = localStorage.getItem('username') || '';
+        this.Nombre = (first || last) ? `${first} ${last}`.trim() : username;
+      }
+    });
+  }
 
   adminCartaAval() {
     this.router.navigate(["admin/carta-aval"]);

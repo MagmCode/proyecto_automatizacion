@@ -1,21 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/auth/auth.service'; 
+import { MatSnackBar } from '@angular/material/snack-bar'; // Importar para mensajes más bonitos
+
 @Component({
   selector: 'app-edir-profile-analist',
   templateUrl: './edir-profile-analist.component.html',
   styleUrls: ['./edir-profile-analist.component.scss']
 })
 export class EdirProfileAnalistComponent implements OnInit {
- profileForm: FormGroup;
+  profileForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService,
+    private snackBar: MatSnackBar // Inyectar SnackBar
+  ) {
     this.profileForm = this.fb.group({
-      first_name: [''],
-      last_name: [''],
-      email: [''],
+      first_name: ['', Validators.required], // Es bueno agregar validadores
+      last_name: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
       telefono: [''],
-      telefono_opcional: [''],
+      // telefono_opcional: [''], // Asegúrate que tu backend acepte este campo si lo envías
     });
   }
 
@@ -24,46 +30,48 @@ export class EdirProfileAnalistComponent implements OnInit {
   }
 
   loadUserData(): void {
-    this.authService.getUserProfile().subscribe(
-      (data) => {
-        // Precargar los datos en el formulario
+    this.authService.getUserProfile().subscribe({
+      next: (data) => {
         this.profileForm.patchValue({
           first_name: data.first_name,
           last_name: data.last_name,
           email: data.email,
           telefono: data.telefono,
-          telefono_opcional: data.telefono_opcional,
+          // telefono_opcional: data.telefono_opcional,
         });
       },
-      (error) => {
+      error: (error) => {
         console.error('Error al cargar los datos del usuario', error);
       }
-    );
+    });
   }
 
   onSubmit(): void {
-    // if (this.profileForm.valid) {
-    //   this.authService.updateUserProfile(this.profileForm.value).subscribe(
-    //     (response) => {
-    //       console.log('Perfil actualizado correctamente', response);
-  
-    //       // Actualizar el localStorage con los nuevos datos
-    //       const updatedData = this.profileForm.value;
-    //       localStorage.setItem('first_name', updatedData.first_name);
-    //       localStorage.setItem('last_name', updatedData.last_name);
-    //       localStorage.setItem('email', updatedData.email);
-    //       localStorage.setItem('telefono', updatedData.telefono);
-    //       localStorage.setItem('telefono_opcional', updatedData.telefono_opcional || '');
-  
-    //       // Actualizar el estado en el AuthService
-    //       this.authService.updateUserData(updatedData);
-  
-    //       alert('Perfil actualizado correctamente');
-    //     },
-    //     (error) => {
-    //       console.error('Error al actualizar el perfil', error);
-    //     }
-    //   );
-    // }
+    if (this.profileForm.invalid) {
+      this.snackBar.open('Por favor verifica los campos requeridos', 'Cerrar', { duration: 3000 });
+      return;
+    }
+
+    // 1. Preguntar confirmación
+    if (confirm('¿Estás seguro de que deseas actualizar tu perfil?')) {
+      
+      const formValues = this.profileForm.value;
+
+      // 2. Llamar al servicio para actualizar en Backend
+      this.authService.updateUserProfile(formValues).subscribe({
+        next: (response) => {
+          console.log('Perfil actualizado en servidor:', response);
+
+          // 3. Actualizar datos locales para reflejar cambios automáticamente (Header, etc.)
+          this.authService.updateUserData(formValues);
+
+          this.snackBar.open('Perfil actualizado correctamente', 'Cerrar', { duration: 3000 });
+        },
+        error: (error) => {
+          console.error('Error al actualizar el perfil', error);
+          this.snackBar.open('Error al actualizar el perfil', 'Cerrar', { duration: 3000 });
+        }
+      });
+    }
   }
 }
