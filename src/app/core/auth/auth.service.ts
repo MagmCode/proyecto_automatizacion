@@ -106,6 +106,40 @@ logout(): Observable<any> {
   );
 }
 
+  /**
+   * Envía los datos actualizados al backend
+   */
+  updateUserProfile(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}usuarios/perfil/`, data, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+   /**
+   * Actualiza los datos en el LocalStorage y en el BehaviorSubject
+   * para que la UI (Header, etc.) se actualice sin recargar la página.
+   */
+  updateUserData(data: any) {
+    // 1. Actualizar LocalStorage
+    if (data.first_name) localStorage.setItem('first_name', data.first_name);
+    if (data.last_name) localStorage.setItem('last_name', data.last_name);
+    if (data.email) localStorage.setItem('email', data.email);
+    // Agrega aquí otros campos si los guardas en localStorage
+
+    // 2. Actualizar el estado reactivo (BehaviorSubject)
+    const currentUser = this.currentUserSubject.value;
+    const updatedUser = { 
+        ...currentUser, 
+        ...data,
+        // Asegúrate de mapear los nombres de campos correctamente si difieren
+        firstName: data.first_name || currentUser.firstName,
+        lastName: data.last_name || currentUser.lastName
+    };
+    
+    this.currentUserSubject.next(updatedUser);
+  }
+
+
   // Métodos de verificación de roles
   isAdmin(): boolean {
     return this.getUserRole() === 'admin';

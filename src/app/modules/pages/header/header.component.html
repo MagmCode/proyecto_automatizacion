@@ -29,7 +29,12 @@
         {{ isAdmin ? 'Admin' : 'Analista' }}
       </a>
       
-      <a (click)="editAdminProfileAnalist()">
+      <a *ngIf="isAdmin" (click)="editAdminProfile()">
+        Editar Perfil
+        <mat-icon class="user-menu-icon">edit</mat-icon>
+      </a>
+
+      <a *ngIf="isAnalist" (click)="editAdminProfileAnalist()">
         Editar Perfil
         <mat-icon class="user-menu-icon">edit</mat-icon>
       </a>
