@@ -15,17 +15,10 @@ export class AuthService {
   private currentUserSubject: BehaviorSubject<any>;
   public currentUser: Observable<any>;
 
-  // URL de conexión - ajusta según tu entorno
-  private apiUrl = `${environment.apiUrl}`; // Desarrollo local
-  // private apiUrl = "http://tu-servidor-produccion:8000/api/"; // Producción
+  // URL de conexión
+  // Asegúrate de que environment.apiUrl sea 'http://localhost:8085/api/'
+  private apiUrl = `${environment.apiUrl}`; 
 
-  // Logout sin Observable, para usar desde el interceptor
-  logoutSync(): void {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
-  }
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -38,11 +31,12 @@ export class AuthService {
     this.setupActivityListeners();
   }
 
-  // Método de login adaptado para tu sistema
+  // --- MÉTODOS DE AUTENTICACIÓN ---
+
   login(username: string, password: string) {
     return this.http.post(`${this.apiUrl}auth/login/`, { username, password }).pipe(
       tap((response: any) => {
-        // Guarda el token JWT
+        // Guarda los tokens
         localStorage.setItem("access_token", response.access);
         localStorage.setItem("refresh_token", response.refresh);
         
@@ -53,20 +47,140 @@ export class AuthService {
           localStorage.setItem("last_name", profile.last_name || '');
           localStorage.setItem("rol", profile.rol);
           
-          // Actualiza el BehaviorSubject
-          this.currentUserSubject.next({
+          const userPayload = {
             username: profile.username,
             firstName: profile.first_name,
             lastName: profile.last_name,
             rol: profile.rol
-          });
+          };
+
+          localStorage.setItem('currentUser', JSON.stringify(userPayload));
+          this.currentUserSubject.next(userPayload);
         });
       }),
       catchError(this.handleError)
     );
   }
 
-  // Manejo de errores mejorado
+  logout(): Observable<any> {
+    const refreshToken = localStorage.getItem('refresh_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+    });
+    
+    // Limpieza local inmediata
+    this.logoutSync();
+    
+    // Intento de invalidación en servidor
+    return this.http.post(`${this.apiUrl}auth/logout/`, { refresh: refreshToken }, {headers}).pipe(
+      tap(() => {
+        this.router.navigate(['/auth/login']);
+      }),
+      catchError(error => {
+        console.error('Error durante logout:', error);
+        this.router.navigate(['/auth/login']); 
+        return throwError(error);
+      })
+    );
+  }
+
+  // Logout síncrono para limpieza local
+  logoutSync(): void {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+    localStorage.removeItem('currentUser');
+    localStorage.removeItem('username');
+    localStorage.removeItem('first_name');
+    localStorage.removeItem('last_name');
+    localStorage.removeItem('rol');
+    this.currentUserSubject.next(null);
+  }
+
+  // --- MÉTODOS DE USUARIOS Y PERFILES ---
+
+  /**
+   * Crea un nuevo usuario en el sistema.
+   * Endpoint: POST /api/usuarios/
+   */
+  registerUser(userData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}usuarios/`, userData, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Obtiene el perfil del usuario autenticado.
+   * Endpoint: GET /api/usuarios/perfil/
+   */
+  getUserProfile(): Observable<any> {
+    return this.http.get(`${this.apiUrl}usuarios/perfil/`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Actualiza el perfil del usuario autenticado.
+   * Endpoint: PATCH /api/usuarios/perfil/
+   */
+  updateUserProfile(data: any): Observable<any> {
+    return this.http.patch(`${this.apiUrl}usuarios/perfil/`, data, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  /**
+   * Actualiza los datos locales del usuario (BehaviorSubject y LocalStorage)
+   * para reflejar cambios en la UI sin recargar.
+   */
+  updateUserData(data: any) {
+    if (data.first_name) localStorage.setItem('first_name', data.first_name);
+    if (data.last_name) localStorage.setItem('last_name', data.last_name);
+    if (data.email) localStorage.setItem('email', data.email);
+
+    const currentUser = this.currentUserSubject.value;
+    const updatedUser = { 
+        ...currentUser, 
+        ...data,
+        firstName: data.first_name || currentUser.firstName,
+        lastName: data.last_name || currentUser.lastName
+    };
+    
+    localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    this.currentUserSubject.next(updatedUser);
+  }
+
+  // --- UTILIDADES Y ROLES ---
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'admin';
+  }
+
+  isAnalista(): boolean {
+    return this.getUserRole() === 'analista';
+  }
+
+  getUserRole(): string {
+    const currentUser = this.currentUserSubject.value;
+    return currentUser?.rol || localStorage.getItem('rol') || '';
+  }
+
+  private getAuthHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
+  }
+
+  isLoggedIn(): boolean {
+    return !!this.getToken();
+  }
+
   private handleError(error: HttpErrorResponse) {
     let errorMessage = "Error en la autenticación";
     if (error.status === 400) {
@@ -79,113 +193,14 @@ export class AuthService {
     return throwError(errorMessage);
   }
 
-  // Método de logout
-logout(): Observable<any> {
-  const refreshToken = localStorage.getItem('refresh_token');
-  const headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`  // ¡Token en header!
-  });
-  
-  // Limpiar tokens locales primero
-  localStorage.removeItem('access_token');
-  localStorage.removeItem('refresh_token');
-  localStorage.removeItem('currentUser');
-  
-  // Opcional: Invalida el token en el backend
-  return this.http.post(`${this.apiUrl}auth/logout/`, { refresh: refreshToken }, {headers}).pipe(
-    tap(() => {
-      // Redirigir después de logout
-      this.router.navigate(['/auth/login']);
-    }),
-    catchError(error => {
-      console.error('Error durante logout:', error);
-      this.router.navigate(['/auth/login']);  // Redirigir incluso si hay error
-      return throwError(error);
-    })
-  );
-}
+  // --- MANEJO DE INACTIVIDAD ---
 
-  /**
-   * Envía los datos actualizados al backend
-   */
-  updateUserProfile(data: any): Observable<any> {
-    return this.http.patch(`${this.apiUrl}usuarios/perfil/`, data, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-   /**
-   * Actualiza los datos en el LocalStorage y en el BehaviorSubject
-   * para que la UI (Header, etc.) se actualice sin recargar la página.
-   */
-  updateUserData(data: any) {
-    // 1. Actualizar LocalStorage
-    if (data.first_name) localStorage.setItem('first_name', data.first_name);
-    if (data.last_name) localStorage.setItem('last_name', data.last_name);
-    if (data.email) localStorage.setItem('email', data.email);
-    // Agrega aquí otros campos si los guardas en localStorage
-
-    // 2. Actualizar el estado reactivo (BehaviorSubject)
-    const currentUser = this.currentUserSubject.value;
-    const updatedUser = { 
-        ...currentUser, 
-        ...data,
-        // Asegúrate de mapear los nombres de campos correctamente si difieren
-        firstName: data.first_name || currentUser.firstName,
-        lastName: data.last_name || currentUser.lastName
-    };
-    
-    this.currentUserSubject.next(updatedUser);
-  }
-
-
-  // Métodos de verificación de roles
-  isAdmin(): boolean {
-    return this.getUserRole() === 'admin';
-  }
-
-  isAnalista(): boolean {
-    return this.getUserRole() === 'analista';
-  }
-
-  // Obtiene el rol del usuario
-  getUserRole(): string {
-    const currentUser = this.currentUserSubject.value;
-    return currentUser?.rol || localStorage.getItem('rol') || '';
-  }
-
-  // Obtiene información del usuario
-  getUserProfile(): Observable<any> {
-    return this.http.get(`${this.apiUrl}usuarios/perfil/`, {
-      headers: this.getAuthHeaders()
-    });
-  }
-
-  // Headers de autenticación
-  private getAuthHeaders(): HttpHeaders {
-    const token = this.getToken();
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
-
-  // Métodos auxiliares
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
-  }
-
-  isLoggedIn(): boolean {
-    return !!this.getToken();
-  }
-
-  // Manejo de inactividad
   private resetInactivityTimer() {
     clearTimeout(this.inactivityTimer);
     this.inactivityTimer = setTimeout(() => {
       if (this.isLoggedIn()) {
-        this.logout();
-        this.router.navigate(['/login'], { queryParams: { sessionExpired: true } });
+        this.logoutSync(); // Usar versión síncrona para forzar salida
+        this.router.navigate(['/auth/login'], { queryParams: { sessionExpired: true } });
       }
     }, this.inactivityDuration);
   }
