@@ -1,7 +1,22 @@
-import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
+
+import { Component, OnInit, AfterViewInit, ViewChild, TemplateRef } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
+import { PolizaService } from 'src/app/services/poliza.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { formatDate } from '@angular/common'; // Already imported, good!
+
+// --- New Imports ---
+// You'll need to import the services for Aseguradora, Ramo, Contratante, Asegurado, FormaPago
+// to fetch their lists for dropdowns in your dialog.
+import { AseguradoraService } from 'src/app/services/aseguradora.service'; // Assuming these exist
+import { RamoService } from 'src/app/services/ramo.service';
+import { ContratanteService } from 'src/app/services/contratante.service';
+import { AseguradoService } from 'src/app/services/asegurado.service';
+import { FormaPagoService } from 'src/app/services/forma-pago.service';
+// --- End New Imports ---
 
 @Component({
   selector: 'app-consulta-analist',
@@ -9,191 +24,198 @@ import { Router } from '@angular/router';
   styleUrls: ['./consulta-analist.component.scss']
 })
 export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
-
   today: Date = new Date();
+  selectedDate: Date = new Date();
   tabIndex = 0;
-  // Loading flag for the Resultado view
-  isLoading: boolean = false;
+  isLoading = false;
 
   displayedColumns: string[] = [
     'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
-    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'renovacion'
+    'vigencia', 'trimestre1', 'trimestre2', 'trimestre3', 'trimestre4', 'primaTotal', 'renovacion'
   ];
 
-  dataSource = new MatTableDataSource([
-    {
-      aseguradora: 'Oceania',
-      ramo: 'PYME',
-      formaPago: 'Semestral',
-      nroPoliza: '505',
-      contratante: 'grupo migo',
-      asegurado: 'grupo migo',
-      vigencia: '23/12/2023 - 23/12/2024',
-      trimestre1: '23/12/2023 - 23/12/2024',
-      trimestre2: '23/12/2023 - 23/12/2024',
-      trimestre3: '23/12/2023 - 23/12/2024',
-      trimestre4: '23/12/2023 - 23/12/2024',
-      renovacion: '23/12/2024'
-    },
-    {
-      aseguradora: 'Andina',
-      ramo: 'Salud',
-      formaPago: 'Anual',
-      nroPoliza: '506',
-      contratante: 'empresa x',
-      asegurado: 'empresa x',
-      vigencia: '01/01/2024 - 01/01/2025',
-      trimestre1: '01/01/2024 - 31/03/2024',
-      trimestre2: '01/04/2024 - 30/06/2024',
-      trimestre3: '01/07/2024 - 30/09/2024',
-      trimestre4: '01/10/2024 - 01/01/2025',
-      renovacion: '01/01/2025'
-    },
-    {
-      aseguradora: 'Mapfre',
-      ramo: 'Vida',
-      formaPago: 'Mensual',
-      nroPoliza: '507',
-      contratante: 'familia perez',
-      asegurado: 'juan perez',
-      vigencia: '15/02/2024 - 15/02/2025',
-      trimestre1: '15/02/2024 - 15/05/2024',
-      trimestre2: '16/05/2024 - 15/08/2024',
-      trimestre3: '16/08/2024 - 15/11/2024',
-      trimestre4: '16/11/2024 - 15/02/2025',
-      renovacion: '15/02/2025'
-    },
-    {
-      aseguradora: 'Seguros Caracas',
-      ramo: 'Auto',
-      formaPago: 'Trimestral',
-      nroPoliza: '508',
-      contratante: 'carlos ruiz',
-      asegurado: 'carlos ruiz',
-      vigencia: '10/03/2024 - 10/03/2025',
-      trimestre1: '10/03/2024 - 10/06/2024',
-      trimestre2: '11/06/2024 - 10/09/2024',
-      trimestre3: '11/09/2024 - 10/12/2024',
-      trimestre4: '11/12/2024 - 10/03/2025',
-      renovacion: '10/03/2025'
-    },
-    {
-      aseguradora: 'Mercantil',
-      ramo: 'Hogar',
-      formaPago: 'Semestral',
-      nroPoliza: '509',
-      contratante: 'maria lopez',
-      asegurado: 'maria lopez',
-      vigencia: '20/04/2024 - 20/04/2025',
-      trimestre1: '20/04/2024 - 20/07/2024',
-      trimestre2: '21/07/2024 - 20/10/2024',
-      trimestre3: '21/10/2024 - 20/01/2025',
-      trimestre4: '21/01/2025 - 20/04/2025',
-      renovacion: '20/04/2025'
-    },
-    {
-      aseguradora: 'Oceania',
-      ramo: 'PYME',
-      formaPago: 'Semestral',
-      nroPoliza: '510',
-      contratante: 'grupo migo',
-      asegurado: 'grupo migo',
-      vigencia: '23/12/2023 - 23/12/2024',
-      trimestre1: '23/12/2023 - 23/12/2024',
-      trimestre2: '23/12/2023 - 23/12/2024',
-      trimestre3: '23/12/2023 - 23/12/2024',
-      trimestre4: '23/12/2023 - 23/12/2024',
-      renovacion: '23/12/2024'
-    },
-    {
-      aseguradora: 'Andina',
-      ramo: 'Salud',
-      formaPago: 'Anual',
-      nroPoliza: '511',
-      contratante: 'empresa y',
-      asegurado: 'empresa y',
-      vigencia: '01/01/2024 - 01/01/2025',
-      trimestre1: '01/01/2024 - 31/03/2024',
-      trimestre2: '01/04/2024 - 30/06/2024',
-      trimestre3: '01/07/2024 - 30/09/2024',
-      trimestre4: '01/10/2024 - 01/01/2025',
-      renovacion: '01/01/2025'
-    },
-    {
-      aseguradora: 'Mapfre',
-      ramo: 'Vida',
-      formaPago: 'Mensual',
-      nroPoliza: '512',
-      contratante: 'familia gomez',
-      asegurado: 'ana gomez',
-      vigencia: '15/02/2024 - 15/02/2025',
-      trimestre1: '15/02/2024 - 15/05/2024',
-      trimestre2: '16/05/2024 - 15/08/2024',
-      trimestre3: '16/08/2024 - 15/11/2024',
-      trimestre4: '16/11/2024 - 15/02/2025',
-      renovacion: '15/02/2025'
-    },
-    {
-      aseguradora: 'Seguros Caracas',
-      ramo: 'Auto',
-      formaPago: 'Trimestral',
-      nroPoliza: '513',
-      contratante: 'laura diaz',
-      asegurado: 'laura diaz',
-      vigencia: '10/03/2024 - 10/03/2025',
-      trimestre1: '10/03/2024 - 10/06/2024',
-      trimestre2: '11/06/2024 - 10/09/2024',
-      trimestre3: '11/09/2024 - 10/12/2024',
-      trimestre4: '11/12/2024 - 10/03/2025',
-      renovacion: '10/03/2025'
-    },
-    {
-      aseguradora: 'Mercantil',
-      ramo: 'Hogar',
-      formaPago: 'Semestral',
-      nroPoliza: '514',
-      contratante: 'jose martinez',
-      asegurado: 'jose martinez',
-      vigencia: '20/04/2024 - 20/04/2025',
-      trimestre1: '20/04/2024 - 20/07/2024',
-      trimestre2: '21/07/2024 - 20/10/2024',
-      trimestre3: '21/10/2024 - 20/01/2025',
-      trimestre4: '21/01/2025 - 20/04/2025',
-      renovacion: '20/04/2025'
-    }
-  ]);
+  dataSource = new MatTableDataSource<any>([]); // Initialize as empty, data will be loaded
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('agregarDialog') agregarDialog!: TemplateRef<any>;
+  
+
+  // --- New Properties for Dialog Dropdowns ---
+  // These will hold the lists of options for your select/dropdown fields
+  aseguradoras: any[] = [];
+  ramos: any[] = [];
+  contratantes: any[] = []; // Only if you want to select existing ones
+  asegurados: any[] = [];     // Only if you want to select existing ones
+  formasPago: any[] = [];
+  // --- End New Properties ---
+
 
   constructor(
-    private _router: Router
+    private _router: Router,
+    private dialog: MatDialog,
+    private polizaService: PolizaService,
+    private snackBar: MatSnackBar,
+    // --- New Service Injections ---
+    private aseguradoraService: AseguradoraService,
+    private ramoService: RamoService,
+    private contratanteService: ContratanteService,
+    private aseguradoService: AseguradoService,
+    private formaPagoService: FormaPagoService
+    // --- End New Service Injections ---
   ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Only load polizas automatically if the current tab is the Resultado tab (index 1).
+    // This avoids populating the table on page reload when the user lands on the Consulta tab.
+    if (this.tabIndex === 1) {
+      this.loadPolizas();
+    }
+    // --- Load options for dropdowns ---
+    this.loadAseguradoras();
+    this.loadRamos();
+    this.loadFormasPago();
+    // You might also want to load contratantes/asegurados if you intend
+    // to allow selecting existing ones rather than always creating new ones.
+    // If always creating new, no need to load these lists here.
+    // this.loadContratantes();
+    // this.loadAsegurados();
+    // --- End Load options ---
+  }
 
   ngAfterViewInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.paginator.pageSize = 5;
+    if (this.paginator) { // Added null check for paginator
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator.pageSize = 5;
+    }
   }
 
   /**
-   * Handle tab changes. If leaving the Resultado tab (index 1), clear cached results.
+   * Handler for tab changes. When leaving the "Resultado" tab (index 1)
+   * we clear any cached results to free memory and avoid showing stale data.
    */
   onTabChange(newIndex: number): void {
     this.tabIndex = newIndex;
+    // Resultado tab index is 1 in the template
     if (newIndex !== 1) {
       this.clearResultadoCache();
     }
   }
 
-  /** Clears table data, filter and stops loading. */
+  /**
+   * Clears the table data, filter, resets paginator and stops loading.
+   */
   clearResultadoCache(): void {
+    // Clear data shown in the table
     this.dataSource.data = [];
+    // Clear any active filter
     this.dataSource.filter = '';
+    // Reset paginator to first page when present
     if (this.paginator) {
-      try { this.paginator.firstPage(); } catch (e) { /* ignore */ }
+      try { this.paginator.firstPage(); } catch (e) { /* ignore if not ready */ }
     }
+    // Stop any loading flag in case a request was left hanging
     this.isLoading = false;
+  }
+
+  // --- New Methods to Load Dropdown Data ---
+  loadAseguradoras(): void {
+    this.aseguradoraService.getAseguradoras().subscribe(data => {
+      this.aseguradoras = data;
+    });
+  }
+
+  loadRamos(): void {
+    this.ramoService.getRamos().subscribe(data => {
+      this.ramos = data;
+    });
+  }
+
+  loadFormasPago(): void {
+    this.formaPagoService.getFormasPago().subscribe(data => {
+      this.formasPago = data;
+    });
+  }
+  // If you decide to allow selection of existing Contratantes/Asegurados:
+  // loadContratantes(): void {
+  //   this.contratanteService.getContratantes().subscribe(data => {
+  //     this.contratantes = data;
+  //   });
+  // }
+  // loadAsegurados(): void {
+  //   this.aseguradoService.getAsegurados().subscribe(data => {
+  //     this.asegurados = data;
+  //   });
+  // }
+  // --- End New Methods ---
+
+
+  loadPolizas(): void {
+    this.isLoading = true;
+    this.polizaService.getPolizas().subscribe({
+      next: (polizas) => {
+        const formatted = polizas.map(p => this.formatPolizaData(p));
+        // Ordenar por id ascendente
+        formatted.sort((a, b) => a.id - b.id);
+        this.dataSource.data = formatted;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error cargando pólizas:', error);
+        this.snackBar.open('Error al cargar pólizas', 'Cerrar', { duration: 3000 });
+        this.isLoading = false;
+      }
+    })
+  }
+
+// En src/app/components/consulta-admin/consulta-admin.component.ts
+
+private formatPolizaData(poliza: any): any {
+  return {
+    id: poliza.id,
+    
+    // Accede al nombre desde el objeto anidado `aseguradora_nombre`
+    aseguradora: poliza.aseguradora_nombre.nombre,
+    // Accede al ID para poder preseleccionar el dropdown en la edición
+    aseguradoraId: poliza.aseguradora_nombre.id,
+
+    // Accede al nombre desde el objeto anidado `ramo_nombre`
+    ramo: poliza.ramo_nombre.nombre,
+    // Accede al ID para la edición
+    ramoId: poliza.ramo_nombre.id,
+
+    // `forma_pago_nombre` es una cadena (string) directamente
+    formaPago: poliza.forma_pago_nombre,
+    // Nota: El ID para `formaPago` deberá ser enviado por el backend
+    // a través de un campo como `forma_pago_id` en el serializador si lo necesitas.
+    // Por ahora, se asume que tu serializador de backend ya lo envía.
+    formaPagoId: poliza.forma_pago_id,
+
+    nroPoliza: poliza.numero,
+    
+    // Los campos `contratante` y `asegurado` son objetos anidados,
+    // por lo que el acceso a `.nombre` y el resto de los datos es directo.
+    contratante: poliza.contratante.nombre,
+    contratanteData: poliza.contratante,
+    asegurado: poliza.asegurado.nombre,
+    aseguradoData: poliza.asegurado,
+
+    // Formatea y mapea el resto de los campos de la póliza
+    vigencia: `${formatDate(poliza.fecha_inicio, 'dd/MM/yyyy', 'en-US')} - ${formatDate(poliza.fecha_fin, 'dd/MM/yyyy', 'en-US')}`,
+    fecha_inicio: poliza.fecha_inicio,
+    fecha_fin: poliza.fecha_fin,
+    trimestre1: poliza.i_trimestre,
+    trimestre2: poliza.ii_trimestre,
+    trimestre3: poliza.iii_trimestre,
+    trimestre4: poliza.iv_trimestre,
+    renovacion: poliza.renovacion,
+    primaTotal: poliza.prima_total,
+    observaciones: poliza.observaciones,
+  };
+}
+
+  // Changed to reflect direct number input for trimestres
+  private formatTrimestre(fechaInicio: string, trimestre: number): string {
+    return `${formatDate(fechaInicio, 'dd/MM/yyyy', 'es-US')} - ${trimestre}`;
   }
 
   applyFilter(filterValue: string) {
@@ -205,21 +227,57 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
     this.applyFilter(input.value);
   }
 
-  exportarTabla() {
-    // Implementa aquí la lógica de exportar (ejemplo: CSV/Excel)
-    alert('Funcionalidad de exportar pendiente de implementar.');
+exportarTabla() {
+    this.isLoading = true; // Mostrar loading mientras descarga
+    this.snackBar.open('Generando Excel...', '', { duration: 1000 });
+
+    const fechaConsulta = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US');
+
+    this.polizaService.exportarPolizasProximasVencerExcel(fechaConsulta).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // Nombre del archivo ej: ProximasVencer_2025-08-01.xlsx
+        a.download = `ProximasVencer_${fechaConsulta}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        this.isLoading = false;
+        this.snackBar.open('Excel descargado correctamente', 'Cerrar', { duration: 3000 });
+      },
+      error: (error) => {
+        console.error('Error exportando:', error);
+        this.isLoading = false;
+        this.snackBar.open('Error al generar el Excel', 'Cerrar', { duration: 3000 });
+      }
+    });
   }
 
-  consultar() {
-    // Show spinner while switching to Resultado. For this component the data is local,
-    // so spinner is brief — but this matches the admin behavior where a service call runs.
+
+ consultar() {
+    this.tabIndex = 1;
+    // This `this.today` is the date from your date picker.
+    const fechaConsulta = formatDate(this.selectedDate, 'yyyy-MM-dd', 'en-US'); // e.g., "2025-08-01"
     this.isLoading = true;
-    // Small delay to allow the spinner to render; then show Resultado and hide spinner.
-    setTimeout(() => {
-      this.tabIndex = 1;
-      this.isLoading = false;
-    }, 150);
+
+    this.polizaService.getPolizasProximasVencer(fechaConsulta).subscribe({
+      next: (polizas) => {
+        const formatted = polizas.map(p => this.formatPolizaData(p));
+        formatted.sort((a, b) => a.id - b.id);
+        this.dataSource.data = formatted;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error cargando pólizas próximas a vencer:', error);
+        this.snackBar.open('Error al cargar pólizas', 'Cerrar', { duration: 3000 });
+        this.isLoading = false;
+      }
+    });
   }
+
 
   salir(): void {
     this._router.navigate(['/analist/home-page']);

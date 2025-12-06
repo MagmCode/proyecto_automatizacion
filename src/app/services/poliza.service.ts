@@ -49,8 +49,23 @@ export class PolizaService {
     return this.http.delete<any>(`${this.apiUrl}${id}/`, { headers: this.getAuthHeaders() });
   }
 
+   /**
+   * Obtiene pólizas próximas a vencer filtradas por una fecha de consulta.
+   */
   getPolizasProximasVencer(fecha: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.proximaVencerUrl}?fecha=${fecha}`, { headers: this.getAuthHeaders() });
+  }
+
+  /**
+   * NUEVO: Exporta a Excel las pólizas próximas a vencer según la fecha.
+   */
+  exportarPolizasProximasVencerExcel(fecha: string): Observable<Blob> {
+    // URL: /api/polizas/proximas-vencer/exportar/?fecha=YYYY-MM-DD
+    const url = `${this.apiUrl}proximas-vencer/exportar/?fecha=${fecha}`;
+    return this.http.get(url, { 
+      headers: this.getAuthHeaders(),
+      responseType: 'blob' 
+    });
   }
 
   // --- NUEVOS MÉTODOS PARA REPORTES ---
@@ -96,4 +111,5 @@ export class PolizaService {
       responseType: 'blob' 
     });
   }
+  
 }
