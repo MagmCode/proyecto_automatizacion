@@ -12,6 +12,8 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
 
   today: Date = new Date();
   tabIndex = 0;
+  // Loading flag for the Resultado view
+  isLoading: boolean = false;
 
   displayedColumns: string[] = [
     'aseguradora', 'ramo', 'formaPago', 'nroPoliza', 'contratante', 'asegurado',
@@ -174,6 +176,26 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator.pageSize = 5;
   }
 
+  /**
+   * Handle tab changes. If leaving the Resultado tab (index 1), clear cached results.
+   */
+  onTabChange(newIndex: number): void {
+    this.tabIndex = newIndex;
+    if (newIndex !== 1) {
+      this.clearResultadoCache();
+    }
+  }
+
+  /** Clears table data, filter and stops loading. */
+  clearResultadoCache(): void {
+    this.dataSource.data = [];
+    this.dataSource.filter = '';
+    if (this.paginator) {
+      try { this.paginator.firstPage(); } catch (e) { /* ignore */ }
+    }
+    this.isLoading = false;
+  }
+
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
   }
@@ -189,7 +211,14 @@ export class ConsultaAnalistComponent implements OnInit, AfterViewInit {
   }
 
   consultar() {
-    this.tabIndex = 1;
+    // Show spinner while switching to Resultado. For this component the data is local,
+    // so spinner is brief — but this matches the admin behavior where a service call runs.
+    this.isLoading = true;
+    // Small delay to allow the spinner to render; then show Resultado and hide spinner.
+    setTimeout(() => {
+      this.tabIndex = 1;
+      this.isLoading = false;
+    }, 150);
   }
 
   salir(): void {

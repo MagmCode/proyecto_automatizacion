@@ -1,5 +1,6 @@
 <app-header></app-header>
-<mat-tab-group class="centered-tab-group">
+<!-- Se agregó [(selectedIndex)] para controlar el cambio de pestaña desde el TS -->
+<mat-tab-group class="centered-tab-group" [(selectedIndex)]="tabIndex">
   <mat-tab label="Búsqueda">
     <div class="consulta-container">
       <mat-card class="consulta-card">
@@ -22,7 +23,7 @@
                 <label class="label">Fecha Hasta</label>
               </div>
               <mat-form-field appearance="outline" class="fecha-campo">
-                <input matInput [matDatepicker]="pickerHasta" name="fechaHasta" [(ngModel)]="fechaHasta" [max]="maxDate" [ngModelOptions]="{standalone: true}">
+                <input matInput [matDatepicker]="pickerHasta" name="fechaHasta" [(ngModel)]="fechaHasta"  [ngModelOptions]="{standalone: true}">
                 <button mat-icon-button matSuffix type="button" (click)="pickerHasta.open()">
                   <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
                 </button>
@@ -35,8 +36,9 @@
               </div>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-select name="aseguradora" [(ngModel)]="selectedAseguradora" [ngModelOptions]="{standalone: true}">
-                  <mat-option value="" disabled>Seleccione</mat-option>
-                  <mat-option *ngFor="let item of aseguradoras" [value]="item">{{ item }}</mat-option>
+                  <mat-option value="" >Todas</mat-option>
+                  <!-- MODIFICADO: Se muestra item.nombre porque item es un objeto -->
+                  <mat-option *ngFor="let item of aseguradoras" [value]="item">{{ item.nombre }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -46,8 +48,9 @@
               </div>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-select name="contratante" [(ngModel)]="selectedContratante" [ngModelOptions]="{standalone: true}">
-                  <mat-option value="" disabled>Seleccione</mat-option>
-                  <mat-option *ngFor="let item of contratantes" [value]="item">{{ item }}</mat-option>
+                  <mat-option value="" >Todos</mat-option>
+                  <!-- MODIFICADO: Se muestra item.nombre -->
+                  <mat-option *ngFor="let item of contratantes" [value]="item">{{ item.nombre }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
@@ -57,15 +60,17 @@
               </div>
               <mat-form-field appearance="outline" class="full-width">
                 <mat-select name="asegurado" [(ngModel)]="selectedAsegurado" [ngModelOptions]="{standalone: true}">
-                  <mat-option value="" disabled>Seleccione</mat-option>
-                  <mat-option *ngFor="let item of asegurados" [value]="item">{{ item }}</mat-option>
+                  <mat-option value="" >Todos</mat-option>
+                  <!-- MODIFICADO: Se muestra item.nombre -->
+                  <mat-option *ngFor="let item of asegurados" [value]="item">{{ item.nombre }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
           </div>
           <div class="consulta-actions">
-            <button mat-raised-button class="button button-1" type="button">Buscar</button>
-            <button mat-raised-button class="button button-2" type="button">Salir</button>
+            <!-- MODIFICADO: Se agregó (click)="buscar()" -->
+            <button mat-raised-button class="button button-1" type="button" (click)="buscar()" [disabled]="isLoading">Buscar</button>
+            <button mat-raised-button class="button button-2" type="button" (click)="salir()">Salir</button>
           </div>
         </form>
       </mat-card>
@@ -76,7 +81,8 @@
       <mat-card class="center-card">
         <div class="table-toolbar">
           <div style="display: flex; justify-content: flex-end; align-items: center; width: 100%; gap: 8px;">
-            <button mat-raised-button class="button-exportar">
+            <!-- MODIFICADO: Se agregó (click)="exportarExcel()" -->
+            <button mat-raised-button class="button-exportar" (click)="exportarExcel()">
               <mat-icon>download</mat-icon>
               Exportar
             </button>
@@ -112,37 +118,22 @@
               <ng-container matColumnDef="vigencia">
                 <th mat-header-cell *matHeaderCellDef class="fecha-col">Vigencia</th>
                 <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.vigencia.split(' - ')">{{f}}<br></span>
+                  <!-- Se ajustó para mostrar el string formateado que viene del TS -->
+                  {{ element.vigencia }}
                 </td>
               </ng-container>
-              <ng-container matColumnDef="trimestre1">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">I trimestre</th>
-                <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.trimestre1.split(' - ')">{{f}}<br></span>
-                </td>
+              <!-- Prima Total (Reemplaza trimestres si el reporte es general, o mantener trimestres si vienen del back) -->
+              <ng-container matColumnDef="primaTotal">
+                <th mat-header-cell *matHeaderCellDef>Prima Total</th>
+                <td mat-cell *matCellDef="let element">{{ element.primaTotal | currency }}</td>
               </ng-container>
-              <ng-container matColumnDef="trimestre2">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">II trimestre</th>
-                <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.trimestre2.split(' - ')">{{f}}<br></span>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="trimestre3">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">III trimestre</th>
-                <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.trimestre3.split(' - ')">{{f}}<br></span>
-                </td>
-              </ng-container>
-              <ng-container matColumnDef="trimestre4">
-                <th mat-header-cell *matHeaderCellDef class="fecha-col">IV trimestre</th>
-                <td mat-cell *matCellDef="let element" class="fecha-col">
-                  <span *ngFor="let f of element.trimestre4.split(' - ')">{{f}}<br></span>
-                </td>
-              </ng-container>
+              
               <ng-container matColumnDef="renovacion">
                 <th mat-header-cell *matHeaderCellDef>Renovación</th>
-                <td mat-cell *matCellDef="let element">{{ element.renovacion }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.renovacion | date:'dd/MM/yyyy' }}</td>
               </ng-container>
+              
+              <!-- Ajusté las columnas mostradas para coincidir con la definición en el TS -->
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
             </table>

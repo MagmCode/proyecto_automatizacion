@@ -27,6 +27,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CedulaLengthDirective } from 'src/app/directives/cedula-length.directive';
 import { TelefonoLengthDirective } from 'src/app/directives/telefono-length.directive';
 import { MaxLengthDirective } from 'src/app/directives/max-length.directive';
+import { LocalLoadingComponent } from './local-loading.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 
@@ -36,6 +37,7 @@ import { FormsModule } from '@angular/forms';
   declarations: [
     HeaderComponent,
     FooterComponent,
+    LocalLoadingComponent,
     CedulaLengthDirective,
     TelefonoLengthDirective,
     MaxLengthDirective
@@ -69,6 +71,7 @@ import { FormsModule } from '@angular/forms';
   exports: [
     HeaderComponent,
     FooterComponent,
+    LocalLoadingComponent,
     CedulaLengthDirective,
     TelefonoLengthDirective,
     MaxLengthDirective,

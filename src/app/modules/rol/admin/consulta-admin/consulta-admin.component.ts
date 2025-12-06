@@ -78,7 +78,11 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit(): void {
-    this.loadPolizas();
+    // Only load polizas automatically if the current tab is the Resultado tab (index 1).
+    // This avoids populating the table on page reload when the user lands on the Consulta tab.
+    if (this.tabIndex === 1) {
+      this.loadPolizas();
+    }
     // --- Load options for dropdowns ---
     this.loadAseguradoras();
     this.loadRamos();
@@ -96,6 +100,34 @@ export class ConsultaAdminComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator = this.paginator;
       this.dataSource.paginator.pageSize = 5;
     }
+  }
+
+  /**
+   * Handler for tab changes. When leaving the "Resultado" tab (index 1)
+   * we clear any cached results to free memory and avoid showing stale data.
+   */
+  onTabChange(newIndex: number): void {
+    this.tabIndex = newIndex;
+    // Resultado tab index is 1 in the template
+    if (newIndex !== 1) {
+      this.clearResultadoCache();
+    }
+  }
+
+  /**
+   * Clears the table data, filter, resets paginator and stops loading.
+   */
+  clearResultadoCache(): void {
+    // Clear data shown in the table
+    this.dataSource.data = [];
+    // Clear any active filter
+    this.dataSource.filter = '';
+    // Reset paginator to first page when present
+    if (this.paginator) {
+      try { this.paginator.firstPage(); } catch (e) { /* ignore if not ready */ }
+    }
+    // Stop any loading flag in case a request was left hanging
+    this.isLoading = false;
   }
 
   // --- New Methods to Load Dropdown Data ---

@@ -1,5 +1,5 @@
 <app-header></app-header>
-<mat-tab-group class="centered-tab-group" [selectedIndex]="tabIndex" (selectedIndexChange)="tabIndex = $event">
+<mat-tab-group class="centered-tab-group" [selectedIndex]="tabIndex" (selectedIndexChange)="onTabChange($event)">
   <mat-tab label="Consulta">
     <div class="consulta-container">
       <mat-card class="consulta-card">
@@ -9,7 +9,7 @@
               <label class="fecha-label">Fecha</label>
             </div>
             <mat-form-field appearance="outline" class="fecha-campo">
-              <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" name="selectedDate" required>
+              <input matInput [matDatepicker]="picker" max="today" [(ngModel)]="selectedDate" name="selectedDate" required>
               <button mat-icon-button matSuffix type="button" (click)="picker.open()">
                 <img src="assets/icons/calendario.png" alt="Calendario" class="custom-calendar-icon" />
               </button>
@@ -26,7 +26,9 @@
   </mat-tab>
   <mat-tab label="Resultado">
     <div class="resultado-container">
-      <mat-card class="center-card">
+      <mat-card class="center-card" style="position: relative;">
+        <!-- Loading overlay: appears while isLoading is true -->
+        <app-local-loading [loading]="isLoading"></app-local-loading>
         <!-- Barra de búsqueda, botón exportar y agregar registro -->
         <div class="table-toolbar">
           <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; flex-wrap: wrap; gap: 8px;">
@@ -37,10 +39,10 @@
               </mat-form-field>
             </div>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <button mat-raised-button class="button-exportar" (click)="exportarTabla()">
+              <!-- <button mat-raised-button class="button-exportar" (click)="exportarTabla()">
                 <mat-icon>download</mat-icon>
                 Exportar
-              </button>
+              </button> -->
               <button mat-raised-button class="button-exportar" (click)="agregarRegistro()">
                 <mat-icon>add</mat-icon>
                 Agregar

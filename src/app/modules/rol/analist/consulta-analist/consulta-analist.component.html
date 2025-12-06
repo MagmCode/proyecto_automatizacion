@@ -1,5 +1,5 @@
 <app-header></app-header>
-<mat-tab-group class="centered-tab-group" [selectedIndex]="tabIndex" (selectedIndexChange)="tabIndex = $event">
+<mat-tab-group class="centered-tab-group" [selectedIndex]="tabIndex" (selectedIndexChange)="onTabChange($event)">
   <mat-tab label="Consulta">
     <div class="consulta-container">
       <mat-card class="consulta-card">
@@ -26,7 +26,8 @@
   </mat-tab>
   <mat-tab label="Resultado">
     <div class="resultado-container">
-      <mat-card class="center-card">
+      <mat-card class="center-card" style="position: relative;">
+        <app-local-loading [loading]="isLoading"></app-local-loading>
         <!-- Barra de búsqueda y botón exportar -->
         <div class="table-toolbar">
           <label class="busqueda-label">Buscar</label>
